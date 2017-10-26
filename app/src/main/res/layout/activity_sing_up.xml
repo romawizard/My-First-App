@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:paddingLeft="35dp"
+    android:background="@drawable/light_background"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="52dp"
+        android:layout_gravity="top"
+        android:orientation="horizontal">
+
+
+
+        <EditText
+            android:id="@+id/number_phone"
+            android:layout_width="251dp"
+            android:layout_height="56dp"
+            android:layout_gravity="center"
+            android:inputType="phone"
+            android:hint="Номер Вашего телефона"
+            android:singleLine="true"
+            android:background="@drawable/edit_singup" />
+
+        <ImageView
+            android:id="@+id/imageTop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_gravity="top"
+        android:orientation="horizontal">
+
+
+        <EditText
+            android:id="@+id/your_name"
+            android:layout_width="251dp"
+            android:layout_height="56dp"
+            android:layout_gravity="center"
+            android:background="@drawable/edit_singup"
+            android:hint="Ваше имя"
+            android:singleLine="true"
+            android:inputType="textPersonName" />
+
+        <ImageView
+            android:id="@+id/imageCenter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+
+        android:layout_gravity="top">
+
+        <EditText
+            android:id="@+id/your_surname"
+            android:layout_width="251dp"
+            android:layout_height="56dp"
+            android:layout_gravity="center"
+            android:background="@drawable/edit_singup"
+            android:hint="Ваша фамилия"
+            android:singleLine="true"
+            android:inputType="textPersonName" />
+
+        <ImageView
+            android:id="@+id/imageButtom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="52dp"
+        android:layout_gravity="top"
+        android:layout_weight=" 1"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/startsingup"
+            android:layout_width="251dp"
+            android:layout_height="56dp"
+            android:background="@drawable/button_touch"
+            android:text="Зарегистрироваться" />
+
+
+
+    </LinearLayout>
+
+</LinearLayout>

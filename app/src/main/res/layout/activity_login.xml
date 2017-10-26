@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/llTop"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/light_background"
+        android:orientation="vertical"
+        android:weightSum="1">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/logo">
+
+        </ImageView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+
+            <EditText
+                android:id="@+id/login"
+                android:layout_width="wrap_content"
+                android:layout_height="52dp"
+                android:layout_marginLeft="40dp"
+                android:layout_weight="0.34"
+                android:background="@drawable/edit_logo"
+                android:cursorVisible="false"
+                android:focusedByDefault="true"
+                android:hint="Номер Вашего телефона"
+                android:inputType="textPersonName"
+                android:singleLine="true"
+                android:textCursorDrawable="@android:color/holo_blue_bright"
+                android:textSize="16sp" />
+
+            <ImageButton
+                android:id="@+id/phone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/phone" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/pass"
+                android:layout_width="20dp"
+                android:layout_height="28dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="20dp"
+
+                android:background="@drawable/pass" />
+
+
+            <EditText
+                android:id="@+id/password"
+                android:layout_width="wrap_content"
+                android:layout_height="52dp"
+                android:layout_marginRight="45dp"
+                android:layout_weight="0.78"
+                android:background="@drawable/edit_pass"
+                android:focusedByDefault="true"
+                android:hint="Ваш пароль"
+                android:singleLine="true"
+                android:inputType="textPassword"
+                android:textCursorDrawable="@color/light_blue"
+                android:textSize="16sp" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+
+            android:orientation="vertical"
+            android:weightSum="1">
+
+
+            <Button
+                android:id="@+id/enter"
+                android:layout_width="235dp"
+                android:layout_height="52dp"
+                android:layout_gravity="center"
+
+                android:background="@drawable/button_touch"
+                android:text="Войти"
+                android:textColor="@color/light_blue" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/llbuttom"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/pressed_singup"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/singUp"
+            android:layout_width="288dp"
+            android:layout_height="56dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="60dp"
+            android:background="@null"
+            android:text="зарегистрироваться"
+            android:textColor="@drawable/text_color"
+            android:textSize="18sp"
+            tools:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="10dp"
+            android:text="    Вы можете бесплатно обмениваться
+   мгновенными сообщениями с друзьями"
+            android:textColor="@color/blue"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+</LinearLayout>
