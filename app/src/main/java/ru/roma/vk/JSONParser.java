@@ -100,12 +100,31 @@ public class JSONParser {
                 dialog.setOnLine(onLine);
                 dialog.setIdMsg(idMsg);
                 dialogs.add(dialog);
+                dialog.setUserId(id);
 
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
         return dialogs;
+    }
+    public static ArrayList<Message> parseMessage(JSONArray array){
+
+        ArrayList<Message> messages = new ArrayList<Message>();
+
+        for ( int i =0; i< array.length();i++){
+            JSONObject msg = array.optJSONObject(i);
+
+            String body = msg.optString("body");
+            int readState = msg.optInt("read_state");
+            int userId = msg.optInt("user_id");
+            int userFrom = msg.optInt("user_from");
+            int out = msg.optInt("out");
+            long date = msg.optLong("date");
+            Message m = new Message(body,readState,date,userId,userFrom,out);
+            messages.add(m);
+        }
+        return messages;
     }
 }
 

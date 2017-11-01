@@ -14,6 +14,7 @@ public class Dialogs {
     private String URLPhoto;
     private long time;
     private int out;
+    private  int userId;
     private int readeState;
     private int onLine;
     private static int count;
@@ -25,6 +26,14 @@ public class Dialogs {
         this.first_name = fist_name;
         this.last_name = last_name;
         this.readeState = readeState;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public static int getCount() {

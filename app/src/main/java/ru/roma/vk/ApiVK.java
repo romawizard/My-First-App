@@ -17,6 +17,7 @@ import java.util.ArrayList;
 
 import javax.net.ssl.HttpsURLConnection;
 
+
 /**
  * Created by Ilan on 12.09.2017.
  */
@@ -40,11 +41,11 @@ public class ApiVK implements DataInformation {
         return apiVK;
     }
 
-    private JSONArray conect(String url) {
+    private JSONObject conect(String url) {
 
         HttpsURLConnection connection;
         BufferedReader reader;
-        JSONArray jsonArray = null;
+        JSONObject jsonObject = null;
 
         try {
             URL myurl = new URL(url);
@@ -65,28 +66,29 @@ public class ApiVK implements DataInformation {
             }
             String resultjson = buffer.toString();
 
-            JSONObject jsonObject = new JSONObject(resultjson);
-            jsonArray = jsonObject.getJSONArray("response");
+            jsonObject = new JSONObject(resultjson);
+//            jsonArray = jsonObject.getJSONArray("response");
         } catch (IOException e) {
             e.printStackTrace();
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        return jsonArray;
+        return jsonObject;
     }
 
     public ArrayList<Dialogs> getAllDialogs(Integer idMsg) {
 
-        String URLQuery = new String();
+        String URLQuery = "https://api.vk.com/method/execute.fulldialog?offset=" + String.valueOf(idMsg) + "&access_token=" + TOKEN + "&v=5.68";
 
-//        if (idMsg == null){
-//            URLQuery = "https://api.vk.com/method/execute.fulldialog?access_token=" + TOKEN + "&v=5.68";
-//        }else {
-            URLQuery = "https://api.vk.com/method/execute.fulldialog?offset=" + String.valueOf(idMsg) + "&access_token=" + TOKEN + "&v=5.68";
-//        }
 
-        ArrayList<Dialogs> dialog = new JSONParser().parseDialog(conect(URLQuery));
+        JSONArray array =null;
+        try {
+            array = conect(URLQuery).getJSONArray("response");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        ArrayList<Dialogs> dialog = new JSONParser().parseDialog(array);
 
         return dialog;
     }
@@ -97,7 +99,12 @@ public class ApiVK implements DataInformation {
 
         Log.d("my log", TOKEN);
         ArrayList<Friend> myfriend = new ArrayList<Friend>();
-        JSONArray friends = conect(URLQuery);
+        JSONArray friends = null;
+        try {
+            friends = conect(URLQuery).getJSONArray("response");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         vkdb.open();
 
@@ -129,8 +136,37 @@ public class ApiVK implements DataInformation {
 
         String URLQuery = "https://api.vk.com/method/users.get?user_ids=" + String.valueOf(id) + "&fields=bdate,city,last_seen,country,status,sex,home_town,about,education,photo_max_orig,online&access_token=" + TOKEN;
 
-        ArrayList<Friend> friends = new JSONParser().parseFriend(conect(URLQuery));
+        JSONArray array =null;
+        try {
+            array = conect(URLQuery).getJSONArray("response");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        ArrayList<Friend> friends = new JSONParser().parseFriend(array);
 
         return friends.get(0);
+    }
+
+    @Override
+    public ArrayList<Message> getMessage(int msgId) {
+
+        String URLQuery = "https://api.vk.com/method/messages.getHistory?user_id=" + msgId + "&access_token=" + TOKEN + "&v=5.68";
+
+        JSONArray array = null;
+        try {
+            JSONObject object = conect(URLQuery).getJSONObject("response");
+            array = object.getJSONArray("items");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return new JSONParser().parseMessage(array);
+    }
+
+    @Override
+    public void sendMessage(String text, int id) {
+
+        String URLQuery = "https://api.vk.com/method/messages.send?user_id=" + text + "message=" + id + "&access_token=" + TOKEN;
+
+        conect(URLQuery);
     }
 }

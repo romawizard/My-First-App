@@ -39,7 +39,7 @@ public class DialogsAdapter extends BaseAdapter implements Filterable {
 
     @Override
     public long getItemId(int i) {
-        return i;
+        return filterDialogs.get(i).getUserId();
     }
 
 

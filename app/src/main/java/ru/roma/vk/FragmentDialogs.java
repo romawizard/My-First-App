@@ -1,6 +1,7 @@
 package ru.roma.vk;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,10 +13,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
+
+import static ru.roma.vk.R.id.image;
 
 /**
  * Created by Ilan on 17.09.2017.
@@ -28,7 +34,11 @@ public class FragmentDialogs extends Fragment implements SwipeRefreshLayout.OnRe
     private SwipeRefreshLayout swipeRefreshLayout;
     private Pagination p;
     private View v;
-    private static final String KEY = "key";
+    public static final String KEY_ID = "id";
+    public static final String KEY_NAME = "name";
+    public static final String KEY_ONLINE = "online";
+    public static final String KEY_PHOTO = "photo";
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,7 +51,7 @@ public class FragmentDialogs extends Fragment implements SwipeRefreshLayout.OnRe
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable final ViewGroup container, Bundle savedInstanceState) {
 
         Log.d("my log", "onCreateView in the Dialog");
 
@@ -95,6 +105,26 @@ public class FragmentDialogs extends Fragment implements SwipeRefreshLayout.OnRe
             @Override
             public void onScroll(AbsListView absListView, int i, int i1, int i2) {
 
+            }
+        });
+
+        listDialog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                Dialogs d = (Dialogs) dialogsAdapter.getItem(i);
+                String name = d.getFirst_name() +" " + d.getLast_name();
+                String URL = d.getURLPhoto();
+                int online = d.getOnLine();
+
+                Intent intent = new Intent(container.getContext(),MessageActivity.class);
+                intent.putExtra(KEY_ID,l);
+                intent.putExtra(KEY_NAME, name);
+                intent.putExtra(KEY_PHOTO,URL);
+                intent.putExtra(KEY_ONLINE,online);
+
+                Log.d("my log" , "ID adapter " + i +" "+ String.valueOf(l));
+                startActivity(intent);
             }
         });
         return v;

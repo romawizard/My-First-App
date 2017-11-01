@@ -53,4 +53,14 @@ public class DataFromBD implements DataInformation {
     public Friend getUser(long id) {
         return null;
     }
+
+    @Override
+    public ArrayList<Message> getMessage(int msgId) {
+        return null;
+    }
+
+    @Override
+    public void sendMessage(String text, int id) {
+
+    }
 }

@@ -9,6 +9,8 @@
     <string name="search">Поиск</string>
     <string name="online">Онлайн</string>
     <string name="friend">Друзья</string>
+    <string name="send">Отпр.</string>
+    <string name="hint_msg">Написать сообщение</string>
 
     <integer name="com_vk_sdk_AppId">6163754</integer>
 </resources>
