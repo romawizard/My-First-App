@@ -29,7 +29,7 @@ public class Pagination {
 
     public synchronized ArrayList<Dialogs> next() {
 
-        ArrayList<Dialogs> dialog = ApiVK.getApiVK().getAllDialogs(offset);
+        ArrayList<Dialogs> dialog = ApiVK.getInstance().getAllDialogs(offset);
 
         if (firstload == 0) {
             cash.addAll(dialog);
@@ -56,7 +56,7 @@ public class Pagination {
             cash.addAll(dialog);
         } else {
             offset = 0;
-            ArrayList<Dialogs> dialogNew = ApiVK.getApiVK().getAllDialogs(offset);
+            ArrayList<Dialogs> dialogNew = ApiVK.getInstance().getAllDialogs(offset);
             cash = dialogNew;
         }
 

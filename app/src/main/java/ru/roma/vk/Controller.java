@@ -34,7 +34,7 @@ public class Controller {
 
     public  DataInformation getTrack (){
         if (hasConnection()){
-            return ApiVK.getApiVK();
+            return ApiVK.getInstance();
         }else
             return new DataFromBD(Conected.getInstans());
     }

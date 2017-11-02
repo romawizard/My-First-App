@@ -12,6 +12,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -34,7 +35,7 @@ public class ApiVK implements DataInformation {
         TOKEN = Conected.getInstans().getSharedPreferences(LoginActivity.MAINPREF, Context.MODE_PRIVATE).getString(LoginActivity.TOKEN, "no token");
     }
 
-    static public ApiVK getApiVK() {
+    static public ApiVK getInstance() {
         if (apiVK == null) {
             apiVK = new ApiVK();
         }
@@ -82,7 +83,7 @@ public class ApiVK implements DataInformation {
         String URLQuery = "https://api.vk.com/method/execute.fulldialog?offset=" + String.valueOf(idMsg) + "&access_token=" + TOKEN + "&v=5.68";
 
 
-        JSONArray array =null;
+        JSONArray array = null;
         try {
             array = conect(URLQuery).getJSONArray("response");
         } catch (JSONException e) {
@@ -136,7 +137,7 @@ public class ApiVK implements DataInformation {
 
         String URLQuery = "https://api.vk.com/method/users.get?user_ids=" + String.valueOf(id) + "&fields=bdate,city,last_seen,country,status,sex,home_town,about,education,photo_max_orig,online&access_token=" + TOKEN;
 
-        JSONArray array =null;
+        JSONArray array = null;
         try {
             array = conect(URLQuery).getJSONArray("response");
         } catch (JSONException e) {
@@ -165,8 +166,16 @@ public class ApiVK implements DataInformation {
     @Override
     public void sendMessage(String text, int id) {
 
-        String URLQuery = "https://api.vk.com/method/messages.send?user_id=" + text + "message=" + id + "&access_token=" + TOKEN;
+        String utf = "";
 
+        try {
+            utf = new String(text.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            Log.d("my log","кодировка не прошла");
+        }
+
+        String URLQuery = "https://api.vk.com/method/messages.send?user_id=" + id + "&message=" + utf + "&access_token=" + TOKEN + "&v=5.68";
+        Log.d("my log", URLQuery);
         conect(URLQuery);
     }
 }

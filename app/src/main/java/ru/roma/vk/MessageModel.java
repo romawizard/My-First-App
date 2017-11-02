@@ -1,5 +1,6 @@
 package ru.roma.vk;
 
+import android.content.ContentValues;
 import android.os.AsyncTask;
 
 import java.util.List;
@@ -10,6 +11,9 @@ import java.util.List;
 
 public class MessageModel {
 
+    private final String KEY_TEXT = "text";
+    private  final  String KEY_ID = "id";
+
     interface LoadMessage{
         void onLoad(List<Message> messageList);
     }
@@ -17,6 +21,16 @@ public class MessageModel {
     public void  loadMessageData(Integer id, LoadMessage callback){
         AsynMessage asynMessage = new AsynMessage(callback);
         asynMessage.execute(id);
+    }
+
+    public void onSendMessage(String text, int id,LoadMessage callback){
+        ContentValues cv = new ContentValues();
+        cv.put(KEY_TEXT,text);
+        cv.put(KEY_ID,id);
+
+        SendMessage sm = new SendMessage(callback);
+        sm.execute(cv);
+
     }
 
     private class AsynMessage extends AsyncTask<Integer ,Void,List<Message>>{
@@ -29,7 +43,7 @@ public class MessageModel {
 
         @Override
         protected List<Message> doInBackground(Integer... integers) {
-            return ApiVK.getApiVK().getMessage(integers[0]);
+            return ApiVK.getInstance().getMessage(integers[0]);
         }
 
         @Override
@@ -37,6 +51,34 @@ public class MessageModel {
             super.onPostExecute(messages);
 
             callBack.onLoad(messages);
+        }
+    }
+
+    private class SendMessage extends AsyncTask<ContentValues,Void,Integer>{
+
+        LoadMessage callback
+
+        SendMessage(LoadMessage callback){
+
+        }
+        @Override
+        protected Integer doInBackground(ContentValues... contentValues) {
+            String text = contentValues[0].getAsString(KEY_TEXT);
+            int id = contentValues[0].getAsInteger(KEY_ID);
+            ApiVK.getInstance().sendMessage(text,id);
+
+            return id;
+        }
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            super.onPostExecute(integer);
+            loadMessageData(integer[0], new LoadMessage() {
+                @Override
+                public void onLoad(List<Message> messageList) {
+
+                }
+            });
         }
     }
 }

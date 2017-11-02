@@ -31,6 +31,11 @@ public class MessagePresenter {
         });
     }
 
+    public  void  sendMessage(String text, int id){
+        model.onSendMessage(text,id);
+
+    }
+
     public void dettach(){
         view = null;
     }

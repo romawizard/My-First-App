@@ -70,6 +70,7 @@
             android:layout_marginLeft="5dp"/>
 
         <EditText
+            android:id="@+id/text_msg"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
@@ -78,6 +79,7 @@
             android:background="@drawable/edit_singup"/>
 
         <Button
+            android:id="@+id/send"
             android:layout_width="60dp"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
