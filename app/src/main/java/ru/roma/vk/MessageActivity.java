@@ -81,6 +81,8 @@ public class MessageActivity extends AppCompatActivity implements MessageView {
         return (int) getIntent().getLongExtra(FragmentDialogs.KEY_ID, 0);
     }
 
+
+
     @Override
     protected void onDestroy() {
         super.onDestroy();

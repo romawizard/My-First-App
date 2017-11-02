@@ -30,9 +30,9 @@ import static ru.roma.vk.R.id.image;
 public class FragmentDialogs extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private ListView listDialog;
-    private DialogsAdapter dialogsAdapter;
-    private SwipeRefreshLayout swipeRefreshLayout;
-    private Pagination p;
+    private static DialogsAdapter dialogsAdapter;
+    private static SwipeRefreshLayout swipeRefreshLayout;
+    private static Pagination p;
     private View v;
     public static final String KEY_ID = "id";
     public static final String KEY_NAME = "name";
@@ -145,7 +145,7 @@ public class FragmentDialogs extends Fragment implements SwipeRefreshLayout.OnRe
         p.deletCash();
     }
 
-    public class DialogAsyn extends AsyncTask<Void, Void, ArrayList<Dialogs>> {
+    public static class DialogAsyn extends AsyncTask<Void, Void, ArrayList<Dialogs>> {
 
         @Override
         protected ArrayList<Dialogs> doInBackground(Void... voids) {

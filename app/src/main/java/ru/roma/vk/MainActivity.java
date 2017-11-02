@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        Log.d("my log", "OonSaveInstanceState CREATE MAIN ACTIVITY");
+        Log.d("my log", "OnSaveInstanceState MAIN ACTIVITY");
         outState.putInt(keyInt, lastScreen);
     }
 
@@ -132,5 +132,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
            fTran.commit();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("my log", "resume main Activity");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.d("my log", "restart main Activity");
+        if (lastScreen == R.id.msg){
+            Pagination p = Pagination.getInstans();
+            p.deletCash();
+            FragmentDialogs.DialogAsyn dialogAsyn = new FragmentDialogs.DialogAsyn();
+            dialogAsyn.execute();
+        }
     }
 }
