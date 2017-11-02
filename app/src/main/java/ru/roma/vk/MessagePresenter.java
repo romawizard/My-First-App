@@ -32,7 +32,12 @@ public class MessagePresenter {
     }
 
     public  void  sendMessage(String text, int id){
-        model.onSendMessage(text,id);
+        model.onSendMessage(text, id, new MessageModel.LoadMessage() {
+            @Override
+            public void onLoad(List<Message> messageList) {
+                view.setMessage(messageList);
+            }
+        });
 
     }
 

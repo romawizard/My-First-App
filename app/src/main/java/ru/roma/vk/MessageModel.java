@@ -56,10 +56,10 @@ public class MessageModel {
 
     private class SendMessage extends AsyncTask<ContentValues,Void,Integer>{
 
-        LoadMessage callback
+        LoadMessage callback;
 
         SendMessage(LoadMessage callback){
-
+            this.callback = callback;
         }
         @Override
         protected Integer doInBackground(ContentValues... contentValues) {
@@ -73,12 +73,7 @@ public class MessageModel {
         @Override
         protected void onPostExecute(Integer integer) {
             super.onPostExecute(integer);
-            loadMessageData(integer[0], new LoadMessage() {
-                @Override
-                public void onLoad(List<Message> messageList) {
-
-                }
-            });
+            loadMessageData(integer,callback);
         }
     }
 }
