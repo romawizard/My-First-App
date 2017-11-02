@@ -47,8 +47,15 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
     public int getItemCount() {
         return messages == null ? 0: messages.size() ;
     }
+
     public  void setMessages(List<Message> messages){
-        this.messages = messages;
+        if (!(this.messages == null)){
+            this.messages.clear();
+            this.messages.addAll(messages);
+            notifyDataSetChanged();
+        }else{
+            this.messages = messages;
+        }
         notifyDataSetChanged();
         Log.d("my log", "messaages = " + messages.size());
     }
@@ -80,10 +87,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
                 leftLiner.setVisibility(View.VISIBLE);
                 bodyl.setText(message.getBody());
                 timel.setText(time);
+                rightLiner.setVisibility(View.GONE);
             }else {
                 rightLiner.setVisibility(View.VISIBLE);
                 bodyr.setText(message.getBody());
                 timer.setText(time);
+                leftLiner.setVisibility(View.GONE);
+
             }
         }
     }
