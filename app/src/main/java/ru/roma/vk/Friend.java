@@ -19,8 +19,9 @@ public class Friend {
     private int platform;
     private int sex;
     private int on_line;
-    private long id;
+    private int id;
     private long time;
+
 
     public Friend(Friend fr) {
         this.first_name = fr.getFirst_name();
@@ -38,7 +39,7 @@ public class Friend {
 
     public Friend(){}
 
-    public Friend(String first_name, String last_name, String URL_photo, int on_line, long id) {
+    public Friend(String first_name, String last_name, String URL_photo, int on_line, int id) {
 
         this.first_name = first_name;
         this.last_name = last_name;
@@ -67,7 +68,7 @@ public class Friend {
         this.URL_photo = URL_photo;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -119,7 +120,7 @@ public class Friend {
         return  sex;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 

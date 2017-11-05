@@ -28,6 +28,14 @@ public class Dialogs {
         this.readeState = readeState;
     }
 
+    @Override
+    public String toString() {
+        return "Dialogs{" +
+                "first_name='" + first_name + '\'' +
+                ", last_name='" + last_name + '\'' +
+                '}';
+    }
+
     public int getUserId() {
         return userId;
     }

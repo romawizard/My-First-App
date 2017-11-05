@@ -22,9 +22,12 @@ import static ru.roma.vk.R.id.leftLiner;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageHolder> {
 
-    LayoutInflater inflater;
+    private LayoutInflater inflater;
     private List<Message> messages;
 
+    public int getCount(){
+        return  messages == null ? 0 :messages.size();
+    }
 
     public MessageAdapter(Context context) {
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

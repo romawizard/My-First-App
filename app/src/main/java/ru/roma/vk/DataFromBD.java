@@ -38,7 +38,7 @@ public class DataFromBD implements DataInformation {
                     String last_name = cursor.getString(cursor.getColumnIndex(DB.LAST_NAME));
                     String URL_photo =  cursor.getString(cursor.getColumnIndex(DB.URL_PHOTO));
                     int on_line = cursor.getInt(cursor.getColumnIndex(DB.ON_LINE));
-                    long id = cursor.getInt(cursor.getColumnIndex(DB.USER_ID));
+                    int id = cursor.getInt(cursor.getColumnIndex(DB.USER_ID));
                     Friend friend = new Friend(first_name,last_name,URL_photo,on_line,id);
                     friends.add(friend);
                 } while (cursor.moveToNext());
@@ -55,7 +55,7 @@ public class DataFromBD implements DataInformation {
     }
 
     @Override
-    public ArrayList<Message> getMessage(int msgId) {
+    public ArrayList<Message> getMessage(int userId, int offset) {
         return null;
     }
 

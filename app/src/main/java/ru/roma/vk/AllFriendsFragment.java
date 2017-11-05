@@ -24,12 +24,12 @@ import java.util.ArrayList;
 
 public class AllFriendsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
-    private  FriendsAdapter friendsAdapter;
+    private FriendsAdapter friendsAdapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private FriendAsyn friendAsyn;
     private ListView friendList;
     public static final String KEY = "key";
-    public  static final String KEY_INTENT = "intent";
+    public static final String KEY_INTENT = "intent";
 
 
     @Override

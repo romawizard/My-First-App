@@ -20,6 +20,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static ru.roma.vk.R.id.image;
 
@@ -27,13 +28,12 @@ import static ru.roma.vk.R.id.image;
  * Created by Ilan on 17.09.2017.
  */
 
-public class FragmentDialogs extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class FragmentDialogs extends Fragment implements SwipeRefreshLayout.OnRefreshListener,Paginable {
 
     private ListView listDialog;
-    private static DialogsAdapter dialogsAdapter;
-    private static SwipeRefreshLayout swipeRefreshLayout;
-    private static Pagination p;
-    private View v;
+    private  DialogsAdapter dialogsAdapter;
+    private  SwipeRefreshLayout swipeRefreshLayout;
+    private  Pagination p;
     public static final String KEY_ID = "id";
     public static final String KEY_NAME = "name";
     public static final String KEY_ONLINE = "online";
@@ -44,7 +44,7 @@ public class FragmentDialogs extends Fragment implements SwipeRefreshLayout.OnRe
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         dialogsAdapter = new DialogsAdapter();
-        p = Pagination.getInstans();
+        p = new Pagination<Dialogs>(20,this);
         setRetainInstance(true);
         Log.d("my log", "onCreate in the Dialog");
     }
@@ -55,8 +55,8 @@ public class FragmentDialogs extends Fragment implements SwipeRefreshLayout.OnRe
 
         Log.d("my log", "onCreateView in the Dialog");
 
-        if (v == null)
-        v = inflater.inflate(R.layout.fragmentdialogs, null);
+
+         View v = inflater.inflate(R.layout.fragmentdialogs, null);
 
         EditText search = v.findViewById(R.id.search_dialog);
         listDialog = v.findViewById(R.id.list_dialogs);
@@ -67,7 +67,7 @@ public class FragmentDialogs extends Fragment implements SwipeRefreshLayout.OnRe
 
         listDialog.setAdapter(dialogsAdapter);
         if (p.hasCash()){
-            dialogsAdapter.setDialog(p.getCash());
+            dialogsAdapter.setDialog((ArrayList<Dialogs>) p.getCash());
         }else {
             DialogAsyn dialogAsyn = new DialogAsyn();
             dialogAsyn.execute();
@@ -145,18 +145,29 @@ public class FragmentDialogs extends Fragment implements SwipeRefreshLayout.OnRe
         p.deletCash();
     }
 
-    public static class DialogAsyn extends AsyncTask<Void, Void, ArrayList<Dialogs>> {
+    @Override
+    public List getData(int offset) {
+        return ApiVK.getInstance().getAllDialogs(offset);
+    }
+
+    @Override
+    public int getCount() {
+        return Dialogs.getCount();
+    }
+
+
+    public  class DialogAsyn extends AsyncTask<Void, Void, List<Dialogs>> {
 
         @Override
         protected ArrayList<Dialogs> doInBackground(Void... voids) {
-            return p.next();
+            return (ArrayList<Dialogs>) p.next();
         }
 
         @Override
-        protected void onPostExecute(ArrayList<Dialogs> dialogs) {
+        protected void onPostExecute(List<Dialogs> dialogs) {
             super.onPostExecute(dialogs);
 
-            dialogsAdapter.setDialog(dialogs);
+            dialogsAdapter.setDialog((ArrayList<Dialogs>) dialogs);
 
             Log.d("my log", "my dialogs: " + String.valueOf(dialogs.size()));
 

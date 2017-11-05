@@ -12,6 +12,7 @@ public class Message {
     private int user_id;
     private int from_id;
     private int out;
+    private static int count;
 
     public Message(String body, int read_state, long date, int user_id, int from_id, int out) {
         this.body = body;
@@ -20,6 +21,14 @@ public class Message {
         this.user_id = user_id;
         this.from_id = from_id;
         this.out = out;
+    }
+
+    public static int getCount() {
+        return count;
+    }
+
+    public static void setCount(int count) {
+        Message.count = count;
     }
 
     public int getOut() {

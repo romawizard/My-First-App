@@ -16,7 +16,7 @@ public interface DataInformation {
 
     Friend getUser(long id);
 
-    ArrayList<Message> getMessage(int msgId);
+    ArrayList<Message> getMessage(int userId,int offset);
 
     void sendMessage(String text, int id);
 }

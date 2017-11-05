@@ -4,64 +4,63 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by Ilan on 18.10.2017.
  */
 
-public class Pagination {
+public class Pagination<T> {
 
-    private static Pagination pagination = new Pagination();
-    private final  static  int MAXLIMIT = 20;
+    private Paginable p;
+    private static int MAX_LIMIT;
     private int offset = 0;
     private int firstload = 0;
-    private ArrayList<Dialogs> cash;
+    private List<T> cash;
 
 
-    private Pagination() {
-        cash = new ArrayList<>();
+    public  Pagination(int maxOffset,Paginable p) {
+        MAX_LIMIT = maxOffset;
+        this.p = p;
     }
 
-    public static Pagination getInstans() {
 
-        return pagination;
-    }
 
-    public synchronized ArrayList<Dialogs> next() {
+    public synchronized List<T> next() {
 
-        ArrayList<Dialogs> dialog = ApiVK.getInstance().getAllDialogs(offset);
-
+        List<T> data = p.getData(offset);
         if (firstload == 0) {
-            cash.addAll(dialog);
+            cash = new ArrayList<T>();
+            cash.addAll(data);
             firstload = 1;
             offset = (cash.size() - 1);
             return  cash;
         }
 
         int n = 0;
-        for (Dialogs d : dialog) {
-            if (cash.contains(d)) {
+        for (T t : data) {
+            if (cash.contains(t)) {
                 n++;
             }
         }
-        if (n >0 && n< MAXLIMIT) {
-            Iterator<Dialogs> iterator = dialog.iterator();
+        if (n >0 && n< MAX_LIMIT) {
+            Iterator<T> iterator = data.iterator();
             while (iterator.hasNext()) {
-                Dialogs d = iterator.next();
-                if (cash.contains(d)) {
-                    Log.d("my log", "repeat: " + d.toString());
+                T t = iterator.next();
+                if (cash.contains(t)) {
+                    Log.d("my log", "repeat: " + t.toString());
                     iterator.remove();
                 }
             }
-            cash.addAll(dialog);
+            cash.addAll(data);
         } else {
             offset = 0;
-            ArrayList<Dialogs> dialogNew = ApiVK.getInstance().getAllDialogs(offset);
-            cash = dialogNew;
+              List<T> DataNew = p.getData(offset);
+            cash = DataNew;
         }
 
 
-        if (offset < Dialogs.getCount())
+        if (offset < p.getCount())
             offset = (cash.size() - 1);
 
         return cash;
@@ -77,7 +76,7 @@ public class Pagination {
             return false;
     }
 
-    public ArrayList<Dialogs> getCash() {
+    public List<T> getCash() {
 
         return cash;
     }
@@ -85,6 +84,6 @@ public class Pagination {
     public void deletCash(){
         offset = 0;
         firstload = 0;
-        cash = new ArrayList<Dialogs>();
+        cash = null;
     }
 }

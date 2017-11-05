@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.ToggleButton;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -15,9 +14,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static final String FRAGMENT_SEARCH = "fragment_search";
     public static final String FRAGMENT_SETTINGS = "fragment_settings";
     private static final String keyInt = "button";
-    private   int lastScreen;
-
     LinearLayout msg, contact, search, settings;
+    private int lastScreen;
+    private FragmentDialogs frgDialogs;
+    private BaseFragmentAllFriends basefrgAllFriends;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (savedInstanceState == null) {
             key = 0;
         } else {
-            Log.d("my log","id fragment " + String.valueOf(savedInstanceState.getInt(keyInt)));
+            Log.d("my log", "id fragment " + String.valueOf(savedInstanceState.getInt(keyInt)));
             key = savedInstanceState.getInt(keyInt);
         }
 //        switch (key) {
@@ -81,24 +81,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
+
         FragmentTransaction fTran = getFragmentManager().beginTransaction();
+
         switch (view.getId()) {
             case R.id.msg:
                 Log.d("my log", "on click button msg");
                 onToggleClick(msg, search, settings, contact);
-                 FragmentDialogs frgDialogs = (FragmentDialogs) getFragmentManager().findFragmentByTag(FRAGMENT_DIALOG);
+                frgDialogs = (FragmentDialogs) getFragmentManager().findFragmentByTag(FRAGMENT_DIALOG);
                 if (frgDialogs == null)
-                    Log.d("my log", "       null in the msg");{
-                    frgDialogs = new FragmentDialogs();
-                }
-                fTran.replace(R.id.fragcont, frgDialogs, FRAGMENT_DIALOG);
-                lastScreen = R.id.msg;
-                break;
+                    Log.d("my log", "       null in the msg");
+            {
+                frgDialogs = new FragmentDialogs();
+            }
+            fTran.replace(R.id.fragcont, frgDialogs, FRAGMENT_DIALOG);
+            lastScreen = R.id.msg;
+            break;
 
             case R.id.contact:
                 Log.d("my log", "on click button contact");
                 onToggleClick(contact, msg, search, settings);
-                BaseFragmentAllFriends basefrgAllFriends = (BaseFragmentAllFriends) getFragmentManager().findFragmentByTag(BASE_FRAGMENT);
+                basefrgAllFriends = (BaseFragmentAllFriends) getFragmentManager().findFragmentByTag(BASE_FRAGMENT);
                 if (basefrgAllFriends == null) {
                     Log.d("my log", "       null in the contact");
                     basefrgAllFriends = new BaseFragmentAllFriends();
@@ -110,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.search:
                 Log.d("my log", "on click button search");
                 onToggleClick(search, settings, contact, msg);
-               FragmentSearch frgsearch = (FragmentSearch) getFragmentManager().findFragmentByTag(FRAGMENT_SEARCH);
+                FragmentSearch frgsearch = (FragmentSearch) getFragmentManager().findFragmentByTag(FRAGMENT_SEARCH);
                 if (frgsearch == null) {
                     Log.d("my log", "       null in the search");
                     frgsearch = new FragmentSearch();
@@ -131,24 +134,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 lastScreen = R.id.settings;
                 break;
         }
-           fTran.commit();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.d("my log", "resume main Activity");
+        fTran.commit();
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
         Log.d("my log", "restart main Activity");
-        if (lastScreen == R.id.msg){
-            Pagination p = Pagination.getInstans();
-            p.deletCash();
-            FragmentDialogs.DialogAsyn dialogAsyn = new FragmentDialogs.DialogAsyn();
-            dialogAsyn.execute();
+        switch (lastScreen){
+            case R.id.msg :
+                frgDialogs.onRefresh();
+                break;
+            case R.id.contact :
+                break;
+            default:
+                break;
         }
     }
 }

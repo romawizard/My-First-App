@@ -2,6 +2,7 @@ package ru.roma.vk;
 
 import android.content.ContentValues;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import java.util.List;
 
@@ -9,10 +10,29 @@ import java.util.List;
  * Created by Ilan on 28.10.2017.
  */
 
-public class MessageModel {
+public class MessageModel implements Paginable{
 
     private final String KEY_TEXT = "text";
     private  final  String KEY_ID = "id";
+    private  int id;
+    private Pagination<Message> p;
+
+    MessageModel(int id){
+        this.id = id;
+        p = new Pagination<>(20,this);
+    }
+
+    @Override
+    public List getData(int offset) {
+        return  ApiVK.getInstance().getMessage(id,offset);
+    }
+
+    @Override
+    public int getCount() {
+        Log.d("my log", "countMessage= " + Message.getCount());
+        return Message.getCount();
+    }
+
 
     interface LoadMessage{
         void onLoad(List<Message> messageList);
@@ -43,7 +63,8 @@ public class MessageModel {
 
         @Override
         protected List<Message> doInBackground(Integer... integers) {
-            return ApiVK.getInstance().getMessage(integers[0]);
+//            return ApiVK.getInstance().getMessage(integers[0],integers[1]);
+            return p.next();
         }
 
         @Override
@@ -73,7 +94,7 @@ public class MessageModel {
         @Override
         protected void onPostExecute(Integer integer) {
             super.onPostExecute(integer);
-            loadMessageData(integer,callback);
+//            loadMessageData(integer,callback);
         }
     }
 }

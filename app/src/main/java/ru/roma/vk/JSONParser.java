@@ -15,22 +15,36 @@ import java.util.ArrayList;
 
 public class JSONParser {
 
-    public static ArrayList<Friend> parseFriend(JSONArray array) {
+    public static ArrayList<Friend> parseFriend(JSONObject jsonObject) {
 
-        ArrayList<Friend> friends = new ArrayList<Friend>();
+        JSONArray object = null;
+        try {
+            object = jsonObject.getJSONArray("response");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+//        JSONArray items = object.optJSONArray("items");
 
-        for (int i = 0; i < array.length(); i++) {
+        final ArrayList<Friend> friends = new ArrayList<Friend>();
+
+        for (int i = 0; i < object.length(); i++) {
             Friend friend = new Friend();
             JSONObject oneuser = null;
 
             try {
-                oneuser = array.getJSONObject(i);
+                oneuser = object.getJSONObject(i);
                 friend.setFirst_name(oneuser.optString("first_name"));
                 friend.setLast_name(oneuser.optString("last_name"));
                 friend.setOn_line(oneuser.optInt("online"));
                 friend.setSex(oneuser.optInt("sex"));
                 friend.setURL_photo(oneuser.optString("photo_max_orig"));
+                if (TextUtils.isEmpty(friend.getURL_photo())){
+                    friend.setURL_photo(oneuser.optString("photo_100"));
+                }
                 friend.setId(oneuser.optInt("uid"));
+                if ((friend.getId() == 0)){
+                    friend.setId(oneuser.optInt("id"));
+                }
                 friend.setStatus(oneuser.optString("status"));
                 friend.setHome_town(oneuser.optString("home_town"));
 
@@ -44,25 +58,43 @@ public class JSONParser {
                 e.printStackTrace();
             }
         }
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                WriteToDB wtdb = new WriteToDB(Conected.getInstans());
+                wtdb.writeFriends(friends);
+                Log.d("my log", "info write o DB");
+            }
+        });
+        t.start();
+
             return friends;
     }
-    public static ArrayList<Dialogs> parseDialog (JSONArray array){
+
+    public static ArrayList<Dialogs> parseDialog (JSONObject jsonObject){
 
         ArrayList<Dialogs>  dialogs = new ArrayList<>();
+
+        JSONArray array = null;
+        try {
+            array = jsonObject.getJSONArray("response");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         JSONObject object = array.optJSONObject(0);
 
         int count = object.optInt("count");
         Dialogs.setCount(count);
 
-        JSONArray arrDialog = object.optJSONArray("items");
+        JSONArray items = object.optJSONArray("items");
         JSONArray arrName = array.optJSONArray(1);
         JSONArray myName = array.optJSONArray(2);
 
-        for (int i = 0; i < arrDialog.length(); i++) {
+        for (int i = 0; i < items.length(); i++) {
             JSONObject oneDialog = null;
             try {
-                oneDialog = arrDialog.getJSONObject(i);
+                oneDialog = items.getJSONObject(i);
                 JSONObject msg = oneDialog.optJSONObject("message");
 
                 int id = msg.optInt("user_id");
@@ -108,12 +140,17 @@ public class JSONParser {
         }
         return dialogs;
     }
-    public static ArrayList<Message> parseMessage(JSONArray array){
+    public static ArrayList<Message> parseMessage(JSONObject jsonObject){
+
+        JSONObject object = jsonObject.optJSONObject("response");
+        int count = object.optInt("count");
+        Message.setCount(count);
+        JSONArray items = object.optJSONArray("items");
 
         ArrayList<Message> messages = new ArrayList<Message>();
 
-        for ( int i =0; i< array.length();i++){
-            JSONObject msg = array.optJSONObject(i);
+        for ( int i =0; i< items.length();i++){
+            JSONObject msg = items.optJSONObject(i);
 
             String body = msg.optString("body");
             int readState = msg.optInt("read_state");
