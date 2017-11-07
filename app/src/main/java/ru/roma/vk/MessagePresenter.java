@@ -8,12 +8,14 @@ import java.util.List;
 
 public class MessagePresenter {
 
-    MessageModel model;
-    MessageView view;
+    private MessageModel model;
+    private MessageView view;
+    private boolean loading = false;
 
     public MessagePresenter(MessageModel model) {
         this.model = model;
     }
+
     public void attachView(MessageView view) {
         this.view = view;
     }
@@ -23,10 +25,12 @@ public class MessagePresenter {
     }
 
     private void loadMessage() {
-        model.loadMessageData(view.getId(), new MessageModel.LoadMessage() {
+        loading = true;
+        model.loadMessageData(new MessageModel.LoadMessage() {
             @Override
             public void onLoad(List<Message> messageList) {
                 view.setMessage(messageList);
+                loading = false;
             }
         });
     }
@@ -36,6 +40,7 @@ public class MessagePresenter {
             @Override
             public void onLoad(List<Message> messageList) {
                 view.setMessage(messageList);
+                loading = false;
             }
         });
 
@@ -43,5 +48,9 @@ public class MessagePresenter {
 
     public void dettach(){
         view = null;
+    }
+
+    public boolean isLoading(){
+        return loading;
     }
 }

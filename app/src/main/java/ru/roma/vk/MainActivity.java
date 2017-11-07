@@ -14,7 +14,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static final String FRAGMENT_SEARCH = "fragment_search";
     public static final String FRAGMENT_SETTINGS = "fragment_settings";
     private static final String keyInt = "button";
-    LinearLayout msg, contact, search, settings;
+    private LinearLayout msg, contact, search, settings;
     private int lastScreen;
     private FragmentDialogs frgDialogs;
     private BaseFragmentAllFriends basefrgAllFriends;

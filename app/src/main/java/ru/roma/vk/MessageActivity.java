@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -18,10 +17,7 @@ public class MessageActivity extends AppCompatActivity implements MessageView {
 
     private MessageAdapter messageAdapter;
     private MessagePresenter presenter;
-    private TextView name;
-    private ImageView photo, online;
     private EditText text;
-    private Button send;
 
 
     @Override
@@ -41,21 +37,22 @@ public class MessageActivity extends AppCompatActivity implements MessageView {
         userList.setLayoutManager(layoutManager);
         userList.setAdapter(messageAdapter);
 
-     userList.addOnScrollListener(new RecyclerView.OnScrollListener() {
-         @Override
-         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-             super.onScrolled(recyclerView, dx, dy);
-             int lastitem = ((LinearLayoutManager)userList.getLayoutManager()).findLastVisibleItemPosition();
+        userList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
 
-             if (lastitem<Message.getCount() && lastitem == messageAdapter.getCount()) {
-                 presenter.isReady();
-             }
-         }
-     });
+                int lastitem = (((LinearLayoutManager) userList.getLayoutManager()).findLastVisibleItemPosition()) + 1;
+
+                if (lastitem < Message.getCount() && lastitem == messageAdapter.getCount() && !presenter.isLoading()) {
+                    presenter.isReady();
+                }
+            }
+        });
 
         text = (EditText) findViewById(R.id.text_msg);
 
-        send = (Button) findViewById(R.id.send);
+        Button send = (Button) findViewById(R.id.send);
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -65,13 +62,13 @@ public class MessageActivity extends AppCompatActivity implements MessageView {
             }
         });
 
-        name = (TextView) findViewById(R.id.name_msg);
+        TextView name = (TextView) findViewById(R.id.name_msg);
         name.setText(getIntent().getStringExtra(FragmentDialogs.KEY_NAME));
 
-        photo = (ImageView) findViewById(R.id.photo_msg);
+        ImageView photo = (ImageView) findViewById(R.id.photo_msg);
         DownloadFile.downloadInList(getIntent().getStringExtra(FragmentDialogs.KEY_PHOTO), photo);
 
-        online = (ImageView) findViewById(R.id.online_msg);
+        ImageView online = (ImageView) findViewById(R.id.online_msg);
         if (getIntent().getIntExtra(FragmentDialogs.KEY_ONLINE, 0) == 1) {
             online.setVisibility(View.VISIBLE);
         } else {
@@ -99,5 +96,7 @@ public class MessageActivity extends AppCompatActivity implements MessageView {
         super.onDestroy();
         presenter.dettach();
     }
+
+
 
 }

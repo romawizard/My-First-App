@@ -11,4 +11,5 @@ public interface MessageView {
     void setMessage(List<Message> messages);
 
     int getId();
+
 }

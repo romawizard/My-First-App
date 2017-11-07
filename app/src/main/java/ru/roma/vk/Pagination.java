@@ -12,29 +12,28 @@ import java.util.List;
 
 public class Pagination<T> {
 
-    private Paginable p;
     private static int MAX_LIMIT;
+    private Paginable p;
     private int offset = 0;
     private int firstload = 0;
     private List<T> cash;
 
 
-    public  Pagination(int maxOffset,Paginable p) {
+    public Pagination(int maxOffset, Paginable p) {
+        cash = new ArrayList<T>();
         MAX_LIMIT = maxOffset;
         this.p = p;
     }
-
 
 
     public synchronized List<T> next() {
 
         List<T> data = p.getData(offset);
         if (firstload == 0) {
-            cash = new ArrayList<T>();
             cash.addAll(data);
             firstload = 1;
             offset = (cash.size() - 1);
-            return  cash;
+            return cash;
         }
 
         int n = 0;
@@ -43,20 +42,20 @@ public class Pagination<T> {
                 n++;
             }
         }
-        if (n >0 && n< MAX_LIMIT) {
+        if (n > 0 && n < MAX_LIMIT) {
             Iterator<T> iterator = data.iterator();
             while (iterator.hasNext()) {
                 T t = iterator.next();
                 if (cash.contains(t)) {
-                    Log.d("my log", "repeat: " + t.toString());
                     iterator.remove();
                 }
             }
             cash.addAll(data);
         } else {
             offset = 0;
-              List<T> DataNew = p.getData(offset);
-            cash = DataNew;
+            List<T> DataNew = p.getData(offset);
+            cash.clear();
+            cash.addAll(DataNew);
         }
 
 
@@ -67,8 +66,8 @@ public class Pagination<T> {
     }
 
     public boolean hasCash() {
-        if (cash == null){
-            return  false;
+        if (cash == null) {
+            return false;
         }
         if (cash.size() > 0) {
             return true;
@@ -81,9 +80,19 @@ public class Pagination<T> {
         return cash;
     }
 
-    public void deletCash(){
+    public void deletCash() {
         offset = 0;
         firstload = 0;
-        cash = null;
+        cash.clear();
+    }
+
+    public List<T> reload() {
+
+                offset = 0;
+                firstload = 0;
+                cash.clear();
+                next();
+
+        return cash;
     }
 }

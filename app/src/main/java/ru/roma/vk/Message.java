@@ -78,4 +78,39 @@ public class Message {
     public void setFrom_id(int from_id) {
         this.from_id = from_id;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Message message = (Message) o;
+
+        if (getRead_state() != message.getRead_state()) return false;
+        if (getDate() != message.getDate()) return false;
+        if (getUser_id() != message.getUser_id()) return false;
+        if (getFrom_id() != message.getFrom_id()) return false;
+        if (getOut() != message.getOut()) return false;
+        return getBody() != null ? getBody().equals(message.getBody()) : message.getBody() == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getBody() != null ? getBody().hashCode() : 0;
+        result = 31 * result + getRead_state();
+        result = 31 * result + (int) (getDate() ^ (getDate() >>> 32));
+        result = 31 * result + getUser_id();
+        result = 31 * result + getFrom_id();
+        result = 31 * result + getOut();
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Message{" +
+                "date=" + date +
+                ", user_id=" + user_id +
+                '}';
+    }
 }

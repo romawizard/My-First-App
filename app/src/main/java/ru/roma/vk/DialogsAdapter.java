@@ -24,7 +24,7 @@ import static ru.roma.vk.R.layout.itemdialog;
 public class DialogsAdapter extends BaseAdapter implements Filterable {
 
     private Filter filter;
-    public ArrayList<Dialogs> dialogs = new ArrayList<Dialogs>();
+    public ArrayList<Dialogs> dialogs;
     private ArrayList<Dialogs> filterDialogs = new ArrayList<Dialogs>();
 
     @Override

@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import java.sql.Ref;
 import java.util.List;
 
 /**
@@ -13,8 +14,8 @@ import java.util.List;
 public class MessageModel implements Paginable{
 
     private final String KEY_TEXT = "text";
-    private  final  String KEY_ID = "id";
-    private  int id;
+    private final  String KEY_ID = "id";
+    private final int id;
     private Pagination<Message> p;
 
     MessageModel(int id){
@@ -38,8 +39,14 @@ public class MessageModel implements Paginable{
         void onLoad(List<Message> messageList);
     }
 
-    public void  loadMessageData(Integer id, LoadMessage callback){
-        AsynMessage asynMessage = new AsynMessage(callback);
+//    interface Refreshing{
+//        void onRefresh();
+//    }
+
+
+
+    public void  loadMessageData( LoadMessage callback){
+        LoadingMessage asynMessage = new LoadingMessage(callback);
         asynMessage.execute(id);
     }
 
@@ -53,17 +60,21 @@ public class MessageModel implements Paginable{
 
     }
 
-    private class AsynMessage extends AsyncTask<Integer ,Void,List<Message>>{
+    public void onRefreshMessage(LoadMessage callback){
+        RefreshMessage refreshMessage = new RefreshMessage(callback);
+        refreshMessage.execute();
+    }
+
+    private class LoadingMessage extends AsyncTask<Integer ,Void,List<Message>>{
 
         LoadMessage callBack;
 
-        public AsynMessage(LoadMessage callBack) {
+        public LoadingMessage(LoadMessage callBack) {
             this.callBack = callBack;
         }
 
         @Override
         protected List<Message> doInBackground(Integer... integers) {
-//            return ApiVK.getInstance().getMessage(integers[0],integers[1]);
             return p.next();
         }
 
@@ -75,18 +86,19 @@ public class MessageModel implements Paginable{
         }
     }
 
-    private class SendMessage extends AsyncTask<ContentValues,Void,Integer>{
+    private class SendMessage extends AsyncTask<ContentValues,Void,Integer> {
 
         LoadMessage callback;
 
-        SendMessage(LoadMessage callback){
+        SendMessage(LoadMessage callback) {
             this.callback = callback;
         }
+
         @Override
         protected Integer doInBackground(ContentValues... contentValues) {
             String text = contentValues[0].getAsString(KEY_TEXT);
             int id = contentValues[0].getAsInteger(KEY_ID);
-            ApiVK.getInstance().sendMessage(text,id);
+            ApiVK.getInstance().sendMessage(text, id);
 
             return id;
         }
@@ -94,7 +106,27 @@ public class MessageModel implements Paginable{
         @Override
         protected void onPostExecute(Integer integer) {
             super.onPostExecute(integer);
-//            loadMessageData(integer,callback);
+           onRefreshMessage(callback);
+        }
+    }
+
+    private class RefreshMessage extends AsyncTask<Integer,Void,List<Message>>{
+
+       LoadMessage callback;
+
+        public RefreshMessage(LoadMessage callback){
+            this.callback =callback;
+        }
+
+        @Override
+        protected List<Message> doInBackground(Integer... integers) {
+            return p.reload();
+        }
+
+        @Override
+        protected void onPostExecute(List<Message> messages) {
+            super.onPostExecute(messages);
+            callback.onLoad(messages);
         }
     }
 }

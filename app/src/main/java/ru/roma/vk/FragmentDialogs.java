@@ -15,14 +15,10 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static ru.roma.vk.R.id.image;
 
 /**
  * Created by Ilan on 17.09.2017.
@@ -34,6 +30,7 @@ public class FragmentDialogs extends Fragment implements SwipeRefreshLayout.OnRe
     private  DialogsAdapter dialogsAdapter;
     private  SwipeRefreshLayout swipeRefreshLayout;
     private  Pagination p;
+    private boolean loadind = false;
     public static final String KEY_ID = "id";
     public static final String KEY_NAME = "name";
     public static final String KEY_ONLINE = "online";
@@ -55,8 +52,7 @@ public class FragmentDialogs extends Fragment implements SwipeRefreshLayout.OnRe
 
         Log.d("my log", "onCreateView in the Dialog");
 
-
-         View v = inflater.inflate(R.layout.fragmentdialogs, null);
+        View v = inflater.inflate(R.layout.fragmentdialogs, null);
 
         EditText search = v.findViewById(R.id.search_dialog);
         listDialog = v.findViewById(R.id.list_dialogs);
@@ -69,7 +65,7 @@ public class FragmentDialogs extends Fragment implements SwipeRefreshLayout.OnRe
         if (p.hasCash()){
             dialogsAdapter.setDialog((ArrayList<Dialogs>) p.getCash());
         }else {
-            DialogAsyn dialogAsyn = new DialogAsyn();
+            LoadDialogAsyn dialogAsyn = new LoadDialogAsyn();
             dialogAsyn.execute();
         }
         search.addTextChangedListener(new TextWatcher() {
@@ -92,13 +88,10 @@ public class FragmentDialogs extends Fragment implements SwipeRefreshLayout.OnRe
         listDialog.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView absListView, int i) {
-                int lastPosition = listDialog.getLastVisiblePosition() +1;
+                int lastPosition = listDialog.getLastVisiblePosition() + 1 ;
 
-                Log.d("my log", "lastposition " + (lastPosition ));
-                Log.d("my log", "count" + Dialogs.getCount());
-                if (lastPosition < Dialogs.getCount() && lastPosition == dialogsAdapter.getCount()){
-                    DialogAsyn dialogAsyn = new DialogAsyn();
-                    dialogAsyn.execute();
+                if (lastPosition < Dialogs.getCount() && lastPosition == dialogsAdapter.getCount() && !isLoadind()){
+                   doLoading();
                 }
             }
 
@@ -123,7 +116,7 @@ public class FragmentDialogs extends Fragment implements SwipeRefreshLayout.OnRe
                 intent.putExtra(KEY_PHOTO,URL);
                 intent.putExtra(KEY_ONLINE,online);
 
-                Log.d("my log" , "ID adapter " + i +" "+ String.valueOf(l));
+                Log.d("my log" , "ID adapter " + i +" "+ l);
                 startActivity(intent);
             }
         });
@@ -135,8 +128,7 @@ public class FragmentDialogs extends Fragment implements SwipeRefreshLayout.OnRe
     public void onRefresh() {
         swipeRefreshLayout.setRefreshing(true);
         p.deletCash();
-        DialogAsyn dialogAsyn = new DialogAsyn();
-        dialogAsyn.execute();
+        doLoading();
     }
 
     @Override
@@ -155,8 +147,24 @@ public class FragmentDialogs extends Fragment implements SwipeRefreshLayout.OnRe
         return Dialogs.getCount();
     }
 
+    private boolean isLoadind(){
+        return loadind;
+    }
 
-    public  class DialogAsyn extends AsyncTask<Void, Void, List<Dialogs>> {
+    private void  doLoading(){
+        LoadDialogAsyn dialogAsyn = new LoadDialogAsyn();
+        dialogAsyn.execute();
+    }
+
+
+    public  class LoadDialogAsyn extends AsyncTask<Void, Void, List<Dialogs>> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            loadind = true;
+
+        }
 
         @Override
         protected ArrayList<Dialogs> doInBackground(Void... voids) {
@@ -172,6 +180,7 @@ public class FragmentDialogs extends Fragment implements SwipeRefreshLayout.OnRe
             Log.d("my log", "my dialogs: " + String.valueOf(dialogs.size()));
 
             swipeRefreshLayout.setRefreshing(false);
+            loadind = false;
         }
     }
 }

@@ -6,15 +6,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
-
-import static ru.roma.vk.R.id.body;
-import static ru.roma.vk.R.id.leftLiner;
 
 /**
  * Created by Ilan on 28.10.2017.
@@ -25,14 +22,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
     private LayoutInflater inflater;
     private List<Message> messages;
 
-    public int getCount(){
-        return  messages == null ? 0 :messages.size();
-    }
-
     public MessageAdapter(Context context) {
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        messages = new ArrayList<>(20);
     }
 
+    public int getCount() {
+        return messages == null ? 0 : messages.size();
+    }
 
     @Override
     public MessageHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -48,26 +45,21 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
 
     @Override
     public int getItemCount() {
-        return messages == null ? 0: messages.size() ;
+        return messages == null ? 0 : messages.size();
     }
 
-    public  void setMessages(List<Message> messages){
-        if (!(this.messages == null)){
-            this.messages.clear();
-            this.messages.addAll(messages);
-            notifyDataSetChanged();
-        }else{
-            this.messages = messages;
-        }
+    public void setMessages(List<Message> messages) {
+
+        this.messages = messages;
         notifyDataSetChanged();
         Log.d("my log", "messaages = " + messages.size());
     }
 
-    public  static class MessageHolder extends RecyclerView.ViewHolder {
+    public static class MessageHolder extends RecyclerView.ViewHolder {
 
-        public  TextView bodyr, timer ,bodyl, timel, name;
+        public TextView bodyr, timer, bodyl, timel, name;
 
-        public RelativeLayout  rightLiner;
+        public RelativeLayout rightLiner;
         LinearLayout leftLiner;
 
         public MessageHolder(View itemView) {
@@ -82,16 +74,16 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
             rightLiner.setVisibility(View.GONE);
         }
 
-        void  bind(Message message){
+        void bind(Message message) {
 
             String time = new TimeHelper().getTime(message.getDate());
 
-            if (message.getOut() == 0){
+            if (message.getOut() == 0) {
                 leftLiner.setVisibility(View.VISIBLE);
                 bodyl.setText(message.getBody());
                 timel.setText(time);
                 rightLiner.setVisibility(View.GONE);
-            }else {
+            } else {
                 rightLiner.setVisibility(View.VISIBLE);
                 bodyr.setText(message.getBody());
                 timer.setText(time);
