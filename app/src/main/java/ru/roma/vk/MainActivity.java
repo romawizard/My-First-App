@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.google.firebase.iid.FirebaseInstanceId;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static final String BASE_FRAGMENT = "base_Fragment";
@@ -23,7 +25,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
-        Log.d("my log", "ON CREATE MAIN ACTIVITY");
+        Log.d("my log", "ON CREATE MAIN ACTIVITY" );
 
         msg = (LinearLayout) findViewById(R.id.msg);
         msg.setOnClickListener(this);

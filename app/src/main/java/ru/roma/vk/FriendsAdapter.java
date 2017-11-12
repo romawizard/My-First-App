@@ -64,7 +64,7 @@ public class FriendsAdapter extends BaseAdapter implements Filterable {
 
 
             DownloadFile df = new DownloadFile();
-            df.downloadInList(friend.getURL_photo(), holder.photo);
+            df.downloadInList(friend.getURLPhoto(), holder.photo);
 
             if (new Controller().getTrack() instanceof ApiVK) {
                 if (friend.getOn_line() == 1) {

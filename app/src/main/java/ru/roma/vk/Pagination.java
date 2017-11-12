@@ -1,10 +1,12 @@
 package ru.roma.vk;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.TreeSet;
 
 /**
  * Created by Ilan on 18.10.2017.
@@ -26,7 +28,7 @@ public class Pagination<T> {
     }
 
 
-    public synchronized List<T> next() {
+    public  List<T> next() {
 
         List<T> data = p.getData(offset);
         if (firstload == 0) {

@@ -13,6 +13,9 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 public class MessageActivity extends AppCompatActivity implements MessageView {
 
     private MessageAdapter messageAdapter;
@@ -24,6 +27,7 @@ public class MessageActivity extends AppCompatActivity implements MessageView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message);
+        ButterKnife.bind(this);
         init();
     }
 
@@ -32,6 +36,7 @@ public class MessageActivity extends AppCompatActivity implements MessageView {
         messageAdapter = new MessageAdapter(this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        layoutManager.setReverseLayout(true);
 
         final RecyclerView userList = (RecyclerView) findViewById(R.id.list_message);
         userList.setLayoutManager(layoutManager);
@@ -63,13 +68,13 @@ public class MessageActivity extends AppCompatActivity implements MessageView {
         });
 
         TextView name = (TextView) findViewById(R.id.name_msg);
-        name.setText(getIntent().getStringExtra(FragmentDialogs.KEY_NAME));
+        name.setText(getIntent().getStringExtra(Keys.KEY_NAME));
 
         ImageView photo = (ImageView) findViewById(R.id.photo_msg);
-        DownloadFile.downloadInList(getIntent().getStringExtra(FragmentDialogs.KEY_PHOTO), photo);
+        DownloadFile.downloadInList(getIntent().getStringExtra(Keys.KEY_PHOTO), photo);
 
         ImageView online = (ImageView) findViewById(R.id.online_msg);
-        if (getIntent().getIntExtra(FragmentDialogs.KEY_ONLINE, 0) == 1) {
+        if (getIntent().getIntExtra(Keys.KEY_ONLINE, 0) == 1) {
             online.setVisibility(View.VISIBLE);
         } else {
             online.setVisibility(View.GONE);
@@ -88,7 +93,7 @@ public class MessageActivity extends AppCompatActivity implements MessageView {
 
     @Override
     public int getId() {
-        return (int) getIntent().getLongExtra(FragmentDialogs.KEY_ID, 0);
+        return (int) getIntent().getLongExtra(Keys.KEY_ID, 0);
     }
 
     @Override
@@ -97,6 +102,9 @@ public class MessageActivity extends AppCompatActivity implements MessageView {
         presenter.dettach();
     }
 
-
-
+    @OnClick(R.id.back_button)
+    public void click(){
+        Log.d("my log", "finish");
+        finish();
+    }
 }

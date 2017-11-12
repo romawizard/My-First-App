@@ -39,12 +39,6 @@ public class MessageModel implements Paginable{
         void onLoad(List<Message> messageList);
     }
 
-//    interface Refreshing{
-//        void onRefresh();
-//    }
-
-
-
     public void  loadMessageData( LoadMessage callback){
         LoadingMessage asynMessage = new LoadingMessage(callback);
         asynMessage.execute(id);

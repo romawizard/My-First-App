@@ -28,6 +28,8 @@ public class Dialogs {
         this.readeState = readeState;
     }
 
+            Dialogs(){}
+
     @Override
     public String toString() {
         return "Dialogs{" +

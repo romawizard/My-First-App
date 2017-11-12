@@ -1,10 +1,5 @@
 package ru.roma.vk;
 
-import android.util.Log;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 /**
  * Created by Ilan on 02.09.2017.
  */
@@ -15,7 +10,7 @@ public class Friend {
     private String last_name;
     private String status;
     private String home_town;
-    private String URL_photo;
+    private String URLPhoto;
     private int platform;
     private int sex;
     private int on_line;
@@ -28,7 +23,7 @@ public class Friend {
         this.last_name = fr.getLast_name();
         this.status = fr.getStatus();
         this.home_town = fr.getHome_town();
-        this.URL_photo = fr.getURL_photo();
+        this.URLPhoto = fr.getURLPhoto();
         this.platform = fr.getPlatform();
         this.sex = fr.getSex();
         this.on_line = fr.getOn_line();
@@ -44,7 +39,7 @@ public class Friend {
         this.first_name = first_name;
         this.last_name = last_name;
         this.on_line = on_line;
-        this.URL_photo = URL_photo;
+        this.URLPhoto = URL_photo;
         this.id = id;
     }
 
@@ -64,8 +59,8 @@ public class Friend {
         this.on_line = on_line;
     }
 
-    public void setURL_photo(String URL_photo) {
-        this.URL_photo = URL_photo;
+    public void setURLPhoto(String URLPhoto) {
+        this.URLPhoto = URLPhoto;
     }
 
     public void setId(int id) {
@@ -96,8 +91,8 @@ public class Friend {
         return last_name;
     }
 
-    public String getURL_photo() {
-        return URL_photo;
+    public String getURLPhoto() {
+        return URLPhoto;
     }
 
     public String getStatus(){

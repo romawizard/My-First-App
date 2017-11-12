@@ -23,7 +23,7 @@ public class WriteToDB {
         for (Friend f : friends) {
             String fist_name = f.getFirst_name();
             String last_name = f.getLast_name();
-            String URL_photo = f.getURL_photo();
+            String URL_photo = f.getURLPhoto();
             int on_line = f.getOn_line();
             int user_id = f.getId();
 

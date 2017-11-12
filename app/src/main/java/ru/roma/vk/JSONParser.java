@@ -37,9 +37,9 @@ public class JSONParser {
                 friend.setLast_name(oneuser.optString("last_name"));
                 friend.setOn_line(oneuser.optInt("online"));
                 friend.setSex(oneuser.optInt("sex"));
-                friend.setURL_photo(oneuser.optString("photo_max_orig"));
-                if (TextUtils.isEmpty(friend.getURL_photo())){
-                    friend.setURL_photo(oneuser.optString("photo_100"));
+                friend.setURLPhoto(oneuser.optString("photo_max_orig"));
+                if (TextUtils.isEmpty(friend.getURLPhoto())){
+                    friend.setURLPhoto(oneuser.optString("photo_100"));
                 }
                 friend.setId(oneuser.optInt("uid"));
                 if ((friend.getId() == 0)){

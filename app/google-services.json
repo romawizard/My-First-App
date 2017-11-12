@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "35075386091",
+    "firebase_url": "https://myvk-8f72e.firebaseio.com",
+    "project_id": "myvk-8f72e",
+    "storage_bucket": "myvk-8f72e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:35075386091:android:5824b16e27911510",
+        "android_client_info": {
+          "package_name": "ru.roma.vk"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "35075386091-te3uc8a9qs6e8nrl92opam80r40d1vlv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ru.roma.vk",
+            "certificate_hash": "cac6743e1cacccb364740eadd825be8d998656ee"
+          }
+        },
+        {
+          "client_id": "35075386091-jru84ak2tqbbjddqqtlqa9un8fd9ik5i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDh5jt0Vq17uyU6xENzouzcIqia-Y1TReM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "35075386091-jru84ak2tqbbjddqqtlqa9un8fd9ik5i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

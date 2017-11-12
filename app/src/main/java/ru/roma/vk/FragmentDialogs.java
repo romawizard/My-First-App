@@ -31,11 +31,6 @@ public class FragmentDialogs extends Fragment implements SwipeRefreshLayout.OnRe
     private  SwipeRefreshLayout swipeRefreshLayout;
     private  Pagination p;
     private boolean loadind = false;
-    public static final String KEY_ID = "id";
-    public static final String KEY_NAME = "name";
-    public static final String KEY_ONLINE = "online";
-    public static final String KEY_PHOTO = "photo";
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -111,10 +106,10 @@ public class FragmentDialogs extends Fragment implements SwipeRefreshLayout.OnRe
                 int online = d.getOnLine();
 
                 Intent intent = new Intent(container.getContext(),MessageActivity.class);
-                intent.putExtra(KEY_ID,l);
-                intent.putExtra(KEY_NAME, name);
-                intent.putExtra(KEY_PHOTO,URL);
-                intent.putExtra(KEY_ONLINE,online);
+                intent.putExtra(Keys.KEY_ID,l);
+                intent.putExtra(Keys.KEY_NAME, name);
+                intent.putExtra(Keys.KEY_PHOTO,URL);
+                intent.putExtra(Keys.KEY_ONLINE,online);
 
                 Log.d("my log" , "ID adapter " + i +" "+ l);
                 startActivity(intent);
