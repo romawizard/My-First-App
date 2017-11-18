@@ -140,6 +140,7 @@ public class JSONParser {
         }
         return dialogs;
     }
+
     public static ArrayList<Message> parseMessage(JSONObject jsonObject){
 
         JSONObject object = jsonObject.optJSONObject("response");
@@ -162,6 +163,19 @@ public class JSONParser {
             messages.add(m);
         }
         return messages;
+    }
+
+    public static int connectNotifiny(JSONObject jsonObject){
+
+        int result = 0;
+
+        try {
+            Log.d("my log","JSON: " + jsonObject.toString());
+            result = jsonObject.getInt("response");
+        } catch (JSONException e) {
+            Log.d("my log","НЕУДАЧНОЕ ПОДКЛЮЧЕНИЕ NOTIFICATION");
+        }
+        return result;
     }
 }
 

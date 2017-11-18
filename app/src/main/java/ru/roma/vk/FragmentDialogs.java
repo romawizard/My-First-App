@@ -17,6 +17,8 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.google.firebase.iid.FirebaseInstanceId;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +46,9 @@ public class FragmentDialogs extends Fragment implements SwipeRefreshLayout.OnRe
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable final ViewGroup container, Bundle savedInstanceState) {
+
+        String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+        Log.d("my log", "Refreshed token: " + refreshedToken);
 
         Log.d("my log", "onCreateView in the Dialog");
 

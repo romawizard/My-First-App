@@ -1,6 +1,7 @@
 package ru.roma.vk;
 
 import android.content.Context;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -31,7 +32,7 @@ public class ApiVK implements DataInformation {
     private final String LOG = "my log";
 
     private ApiVK() {
-        TOKEN = Conected.getInstans().getSharedPreferences(LoginActivity.MAINPREF, Context.MODE_PRIVATE).getString(LoginActivity.TOKEN, "no token");
+        TOKEN = Conected.getInstans().getSharedPreferences(Keys.MAINPREF, Context.MODE_PRIVATE).getString(Keys.TOKEN, "no token");
     }
 
     static public ApiVK getInstance() {
@@ -108,9 +109,7 @@ public class ApiVK implements DataInformation {
 
         String URLQuery = "https://api.vk.com/method/messages.getHistory?user_id=" + userId + "&offset=" + offset + "&access_token=" + TOKEN + "&v=5.68";
 
-        Log.d("my log", URLQuery);
-
-           return new JSONParser().parseMessage(conect(URLQuery));
+        return new JSONParser().parseMessage(conect(URLQuery));
     }
 
     @Override
@@ -127,5 +126,16 @@ public class ApiVK implements DataInformation {
         String URLQuery = "https://api.vk.com/method/messages.send?user_id=" + id + "&message=" + utf + "&access_token=" + TOKEN + "&v=5.68";
         Log.d("my log", URLQuery);
         conect(URLQuery);
+    }
+
+    public int nonification(){
+
+        String nonifToken = Conected.getInstans().getSharedPreferences(Keys.MAINPREF,Context.MODE_PRIVATE).getString(Keys.TOKEN_NOTIF,"no");
+
+        String androidID = Settings.Secure.getString(Conected.getInstans().getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        String URLQuery = "https://api.vk.com/method/account.registerDevice?token="+ nonifToken + "&device_id=" + androidID + "&access_token=" + TOKEN + "&v=5.68";
+
+        return JSONParser.connectNotifiny(conect(URLQuery)) ;
     }
 }

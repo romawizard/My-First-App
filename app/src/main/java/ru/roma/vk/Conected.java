@@ -26,7 +26,9 @@ public class Conected extends android.app.Application {
         VKSdk.initialize(this);
         ImageLoaderConfiguration imageLoaderConfiguration = new ImageLoaderConfiguration.Builder(this).build();
         ImageLoader.getInstance().init(imageLoaderConfiguration);
+
     }
+
 
     public  static Conected getInstans(){
         return  instans;

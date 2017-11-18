@@ -1,11 +1,14 @@
 package ru.roma.vk;
 
 import android.app.FragmentTransaction;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 
@@ -25,7 +28,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
-        Log.d("my log", "ON CREATE MAIN ACTIVITY" );
+        Log.d("my log", "ON CREATE MAIN ACTIVITY");
+
+        RunningNotification not = new RunningNotification();
+        not.execute();
 
         msg = (LinearLayout) findViewById(R.id.msg);
         msg.setOnClickListener(this);
@@ -143,14 +149,45 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onRestart() {
         super.onRestart();
         Log.d("my log", "restart main Activity");
-        switch (lastScreen){
-            case R.id.msg :
+        switch (lastScreen) {
+            case R.id.msg:
                 frgDialogs.onRefresh();
                 break;
-            case R.id.contact :
+            case R.id.contact:
                 break;
             default:
                 break;
+        }
+    }
+
+
+    private void successful() {
+        Toast.makeText(this, "подключение к firebase успешно", Toast.LENGTH_LONG).show();
+    }
+
+    private void failed() {
+        Toast.makeText(this, " не подключенно к firebase", Toast.LENGTH_LONG).show();
+    }
+
+    private class RunningNotification extends AsyncTask<Void, Void, Integer> {
+
+        @Override
+        protected Integer doInBackground(Void[] voids) {
+            String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+            Log.d("my log", "Refreshed token: " + refreshedToken);
+            getSharedPreferences(Keys.MAINPREF, MODE_PRIVATE).edit().putString(Keys.TOKEN_NOTIF, refreshedToken).commit();
+
+            return ApiVK.getInstance().nonification();
+        }
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            super.onPostExecute(integer);
+            if (integer > 0) {
+                successful();
+            } else {
+                failed();
+            }
         }
     }
 }
