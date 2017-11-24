@@ -1,5 +1,7 @@
 package ru.roma.vk;
 
+import java.util.List;
+
 /**
  * Created by Ilan on 17.09.2017.
  */
@@ -14,21 +16,34 @@ public class Dialogs {
     private String URLPhoto;
     private long time;
     private int out;
-    private  int userId;
+    private int userId;
     private int readeState;
     private int onLine;
     private static int count;
     private Integer idMsg;
 
-    public Dialogs(String title, String body,int readeState, String fist_name, String last_name ) {
-        this.title = title;
-        this.body = body;
-        this.first_name = fist_name;
-        this.last_name = last_name;
-        this.readeState = readeState;
+            Dialogs(){}
+
+
+    public int getChatId() {
+        return chatId;
     }
 
-            Dialogs(){}
+    public void setChatId(int chatId) {
+        this.chatId = chatId;
+    }
+
+    private  int chatId;
+
+    public List<Integer> getCharActives() {
+        return charActives;
+    }
+
+    public void setCharActives(List<Integer> charActives) {
+        this.charActives = charActives;
+    }
+
+    private List<Integer>  charActives;
 
     @Override
     public String toString() {
@@ -39,6 +54,9 @@ public class Dialogs {
     }
 
     public int getUserId() {
+        if (chatId!=0){
+            return 2000000000 + chatId;
+        }
         return userId;
     }
 

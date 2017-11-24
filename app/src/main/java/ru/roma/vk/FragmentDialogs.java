@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -106,7 +107,12 @@ public class FragmentDialogs extends Fragment implements SwipeRefreshLayout.OnRe
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
                 Dialogs d = (Dialogs) dialogsAdapter.getItem(i);
-                String name = d.getFirst_name() +" " + d.getLast_name();
+                String name;
+                if (TextUtils.isEmpty(d.getTitle())){
+                    name = d.getFirst_name() +" " + d.getLast_name();
+                }else {
+                    name = d.getTitle();
+                }
                 String URL = d.getURLPhoto();
                 int online = d.getOnLine();
 

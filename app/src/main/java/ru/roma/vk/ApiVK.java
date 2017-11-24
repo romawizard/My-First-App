@@ -5,7 +5,6 @@ import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -27,9 +26,8 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class ApiVK implements DataInformation {
 
-    static private ApiVK apiVK;
+    private static ApiVK apiVK;
     private final String TOKEN;
-    private final String LOG = "my log";
 
     private ApiVK() {
         TOKEN = Conected.getInstans().getSharedPreferences(Keys.MAINPREF, Context.MODE_PRIVATE).getString(Keys.TOKEN, "no token");
@@ -63,7 +61,7 @@ public class ApiVK implements DataInformation {
 
             if (!TextUtils.isEmpty(line)) {
                 buffer.append(line);
-                Log.d(LOG, "буфер заполнен");
+                Log.d(Keys.LOG, "буфер заполнен");
             }
             String resultjson = buffer.toString();
 
@@ -84,6 +82,8 @@ public class ApiVK implements DataInformation {
 
         ArrayList<Dialogs> dialog = new JSONParser().parseDialog(conect(URLQuery));
 
+        Log.d(Keys.LOG, TOKEN);
+
         return dialog;
     }
 
@@ -91,7 +91,7 @@ public class ApiVK implements DataInformation {
 
         String URLQuery = "https://api.vk.com/method/friends.get?fields=nickname,photo_100&order=hints&access_token=" + TOKEN;
 
-        return  JSONParser.parseFriend(conect(URLQuery));
+        return JSONParser.parseFriend(conect(URLQuery));
     }
 
     @Override
@@ -118,9 +118,9 @@ public class ApiVK implements DataInformation {
         String utf = "";
 
         try {
-            utf = URLEncoder.encode(text,"utf-8");
+            utf = URLEncoder.encode(text, "utf-8");
         } catch (UnsupportedEncodingException e) {
-            Log.d("my log","кодировка не прошла");
+            Log.d("my log", "кодировка не прошла");
         }
 
         String URLQuery = "https://api.vk.com/method/messages.send?user_id=" + id + "&message=" + utf + "&access_token=" + TOKEN + "&v=5.68";
@@ -128,14 +128,21 @@ public class ApiVK implements DataInformation {
         conect(URLQuery);
     }
 
-    public int nonification(){
+    public int nonification() {
 
-        String nonifToken = Conected.getInstans().getSharedPreferences(Keys.MAINPREF,Context.MODE_PRIVATE).getString(Keys.TOKEN_NOTIF,"no");
+        String nonifToken = Conected.getInstans().getSharedPreferences(Keys.MAINPREF, Context.MODE_PRIVATE).getString(Keys.TOKEN_NOTIF, "no");
 
         String androidID = Settings.Secure.getString(Conected.getInstans().getContentResolver(), Settings.Secure.ANDROID_ID);
 
-        String URLQuery = "https://api.vk.com/method/account.registerDevice?token="+ nonifToken + "&device_id=" + androidID + "&access_token=" + TOKEN + "&v=5.68";
+        String URLQuery = "https://api.vk.com/method/account.registerDevice?token=" + nonifToken + "&device_id=" + androidID + "&access_token=" + TOKEN + "&v=5.68";
 
-        return JSONParser.connectNotifiny(conect(URLQuery)) ;
+        return JSONParser.connectNotifiny(conect(URLQuery));
+    }
+
+    public String getUserPhoto(int userId) {
+
+        final String URLQuery = "https://api.vk.com/method/users.get?user_ids=" + userId + "&fields=photo_100&access_token=" + TOKEN + "&v=5.68";
+
+        return JSONParser.parseUserPhoto(conect(URLQuery));
     }
 }

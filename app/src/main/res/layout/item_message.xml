@@ -1,65 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:id="@+id/leftLiner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingRight="30dp">
+
+        <ImageView
+            android:id="@+id/photo_user_msg"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="10dp" />
 
 
         <LinearLayout
-            android:id="@+id/leftLiner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingRight="30dp">
+            android:background="@drawable/input_loginl"
+            android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/bodyl_msg"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/input_loginl"
-                    android:gravity="center_vertical"
-                    android:textColor="@color/black"
-                    android:textSize="16sp" />
+            <LinearLayout
+                android:id="@+id/content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
-                <TextView
-                    android:id="@+id/timel_msg"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0"
-                    android:gravity="center_vertical"
-                    android:layout_gravity="center_vertical"
-                    android:maxLines="1"
-                    android:textColor="@color/blue"
-                    android:textSize="12sp" />
+            <TextView
+                android:id="@+id/bodyl_msg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:gravity="center_vertical"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+
+
         </LinearLayout>
 
-        <RelativeLayout
-            android:id="@+id/rightLiner"
+        <!--<TextView-->
+        <!--android:id="@+id/bodyl_msg"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_weight="1"-->
+        <!--android:background="@drawable/input_loginl"-->
+        <!--android:gravity="center_vertical"-->
+        <!--android:textColor="@color/black"-->
+        <!--android:textSize="16sp" />-->
+
+        <TextView
+            android:id="@+id/timel_msg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_gravity="center_vertical"
 
-                <TextView
-                    android:id="@+id/bodyr_msg"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:gravity="center_vertical"
-                    android:maxWidth="250dp"
-                    android:background="@drawable/input_loginr"
-                    android:textColor="@color/black"
-                    android:textSize="16sp" />
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:textColor="@color/blue"
+            android:textSize="12sp" />
+    </LinearLayout>
 
-                <TextView
-                    android:id="@+id/timer_msg"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toLeftOf="@id/bodyr_msg"
-                    android:maxLines="1"
-                    android:layout_centerVertical="true"
-                    android:textColor="@color/blue"
-                    android:textSize="12sp" />
-        </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/rightLiner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/bodyr_msg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/input_loginr"
+            android:gravity="center_vertical"
+            android:maxWidth="250dp"
+            android:textColor="@color/black"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/timer_msg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/bodyr_msg"
+            android:maxLines="1"
+            android:textColor="@color/blue"
+            android:textSize="12sp" />
+    </RelativeLayout>
 
 </LinearLayout>

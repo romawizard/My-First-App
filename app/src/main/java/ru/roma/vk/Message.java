@@ -1,26 +1,35 @@
 package ru.roma.vk;
 
+import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+
+import java.util.List;
+
+import ru.roma.vk.post.Attachment;
+
 /**
  * Created by Ilan on 28.10.2017.
  */
 
 public class Message {
 
+    private static int count;
     private String body;
     private int read_state;
     private long date;
     private int user_id;
     private int from_id;
     private int out;
-    private static int count;
+    private int chatId;
+    private String URLPhoto;
+    private List<Attachment> content;
 
-    public Message(String body, int read_state, long date, int user_id, int from_id, int out) {
-        this.body = body;
-        this.read_state = read_state;
-        this.date = date;
-        this.user_id = user_id;
-        this.from_id = from_id;
-        this.out = out;
+    public Message() {
     }
 
     public static int getCount() {
@@ -29,6 +38,31 @@ public class Message {
 
     public static void setCount(int count) {
         Message.count = count;
+    }
+
+    public List<Attachment> getContent() {
+        return content;
+    }
+
+    public void setContent(List<Attachment> content) {
+        this.content = content;
+    }
+
+    public int getChatId() {
+        return chatId;
+    }
+
+    public void setChatId(int chatId) {
+        this.chatId = chatId;
+    }
+
+    public String getURLPhoto() {
+        return URLPhoto;
+    }
+
+    public void setURLPhoto(String URLPhoto) {
+        this.URLPhoto = URLPhoto;
+
     }
 
     public int getOut() {
@@ -112,5 +146,68 @@ public class Message {
                 "date=" + date +
                 ", user_id=" + user_id +
                 '}';
+    }
+
+    public LinearLayout showContent() {
+
+        int size = content.size();
+        int position = 0;
+
+        if (size > 0) {
+
+            Log.d(Keys.LOG, "size attachment = " + size);
+
+            LinearLayout mainLayout = new LinearLayout(Conected.getInstans());
+            mainLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+            for (int i = 0; i < 3; i++) {
+
+                if (i == 0) {
+
+               LinearLayout layout = new LinearLayout(Conected.getInstans());
+               layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+
+                    layout.addView(content.get(0).draw());
+                    mainLayout.addView(layout);
+                    position++;
+                    continue;
+                }
+
+                if (i == 2) {
+
+                    LinearLayout layout = new LinearLayout(Conected.getInstans());
+                    layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+                    layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                    layout.setOrientation(LinearLayout.HORIZONTAL);
+
+                    for (; position < size && position<3; position++) {
+                        layout.addView(content.get(position).draw());
+                        layout.addView(layout);
+
+                    }
+                    mainLayout.addView(layout);
+                    continue;
+                }
+                if ( i == 3) {
+
+                    LinearLayout layout = new LinearLayout(Conected.getInstans());
+                    layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+                    layout.setOrientation(LinearLayout.HORIZONTAL);
+
+
+                    for (; position < size; position++) {
+                        layout.addView(content.get(position).draw());
+                        layout.addView(layout);
+
+                    }
+                    mainLayout.addView(layout);
+                }
+            }
+                return mainLayout;
+        }
+            return new LinearLayout(Conected.getInstans());
     }
 }

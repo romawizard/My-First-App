@@ -62,9 +62,7 @@ public class FriendsAdapter extends BaseAdapter implements Filterable {
             Friend friend = filterFriend.get(i);
             holder.name.setText(friend.getFirst_name() + " " + friend.getLast_name());
 
-
-            DownloadFile df = new DownloadFile();
-            df.downloadInList(friend.getURLPhoto(), holder.photo);
+            DownloadFile.downloadInList(friend.getURLPhoto(), holder.photo);
 
             if (new Controller().getTrack() instanceof ApiVK) {
                 if (friend.getOn_line() == 1) {

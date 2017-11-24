@@ -29,7 +29,7 @@ public class AllFriendsFragment extends Fragment implements SwipeRefreshLayout.O
     private FriendAsyn friendAsyn;
     private ListView friendList;
     public static final String KEY = "key";
-    public static final String KEY_INTENT = "intent";
+    ;
 
 
     @Override
@@ -86,7 +86,7 @@ public class AllFriendsFragment extends Fragment implements SwipeRefreshLayout.O
                 Log.d("my log", "ID: " + String.valueOf(l));
 
                 Intent intent = new Intent(container.getContext(),UserActivity.class);
-                intent.putExtra(KEY_INTENT,l);
+                intent.putExtra(Keys.KEY_INTENT,(int)l);
                 startActivity(intent);
             }
         });

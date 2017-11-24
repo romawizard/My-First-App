@@ -1,5 +1,6 @@
 package ru.roma.vk;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -107,4 +108,12 @@ public class MessageActivity extends AppCompatActivity implements MessageView {
         Log.d("my log", "finish");
         finish();
     }
+
+    @OnClick(R.id.photo_msg)
+    public void  onClick(){
+        Intent intent = new Intent(this,UserActivity.class);
+        intent.putExtra(Keys.KEY_INTENT,getId());
+        startActivity(intent);
+    }
+
 }

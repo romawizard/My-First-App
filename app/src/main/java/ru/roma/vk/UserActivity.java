@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -22,7 +23,7 @@ import butterknife.OnClick;
 
 public class UserActivity extends AppCompatActivity {
 
-    long id;
+    int id;
     private Friend friend;
 
     @BindView(R.id.photo_user)
@@ -49,7 +50,9 @@ public class UserActivity extends AppCompatActivity {
         setContentView(R.layout.user_layuot);
         ButterKnife.bind(this);
 
-        id = getIntent().getLongExtra(AllFriendsFragment.KEY_INTENT, 1);
+        id = getIntent().getIntExtra(Keys.KEY_INTENT, 1);
+
+        Log.d("my log", "id+ " + id);
 
         llstatus.setVisibility(View.GONE);
 
@@ -99,6 +102,13 @@ public class UserActivity extends AppCompatActivity {
         intent.putExtra(Keys.KEY_NAME, name);
         intent.putExtra(Keys.KEY_PHOTO, URL);
         intent.putExtra(Keys.KEY_ONLINE, online);
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.photo_user)
+    public  void onClick(){
+        Intent intent = new Intent(this,PhotoProfil.class);
+        intent.putExtra(Keys.KEY_URL,friend.getURLPhoto());
         startActivity(intent);
     }
 

@@ -30,9 +30,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.main_activity);
         Log.d("my log", "ON CREATE MAIN ACTIVITY");
 
-        RunningNotification not = new RunningNotification();
-        not.execute();
-
         msg = (LinearLayout) findViewById(R.id.msg);
         msg.setOnClickListener(this);
 
@@ -77,7 +74,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         outState.putInt(keyInt, lastScreen);
     }
 
-
     public void onToggleClick(View view, View restart1, View restart2, View restart3) {
 
         view.setSelected(true);
@@ -85,7 +81,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         restart2.setSelected(false);
         restart3.setSelected(false);
     }
-
 
     @Override
     public void onClick(View view) {
@@ -160,34 +155,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-
-    private void successful() {
-        Toast.makeText(this, "подключение к firebase успешно", Toast.LENGTH_LONG).show();
-    }
-
-    private void failed() {
-        Toast.makeText(this, " не подключенно к firebase", Toast.LENGTH_LONG).show();
-    }
-
-    private class RunningNotification extends AsyncTask<Void, Void, Integer> {
-
-        @Override
-        protected Integer doInBackground(Void[] voids) {
-            String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-            Log.d("my log", "Refreshed token: " + refreshedToken);
-            getSharedPreferences(Keys.MAINPREF, MODE_PRIVATE).edit().putString(Keys.TOKEN_NOTIF, refreshedToken).commit();
-
-            return ApiVK.getInstance().nonification();
-        }
-
-        @Override
-        protected void onPostExecute(Integer integer) {
-            super.onPostExecute(integer);
-            if (integer > 0) {
-                successful();
-            } else {
-                failed();
-            }
-        }
-    }
 }

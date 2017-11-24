@@ -76,7 +76,7 @@ public class OnlineFriendsFragment extends Fragment implements SwipeRefreshLayou
                 Log.d("my log", "ID: " + String.valueOf(l));
 
                 Intent intent = new Intent(container.getContext(),UserActivity.class);
-                intent.putExtra(AllFriendsFragment.KEY_INTENT,l);
+                intent.putExtra(Keys.KEY_INTENT,l);
                 startActivity(intent);
             }
         });
