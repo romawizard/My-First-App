@@ -1,12 +1,10 @@
 package ru.roma.vk;
 
+import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TableLayout;
-import android.widget.TableRow;
 
 import java.util.List;
 
@@ -158,56 +156,137 @@ public class Message {
             Log.d(Keys.LOG, "size attachment = " + size);
 
             LinearLayout mainLayout = new LinearLayout(Conected.getInstans());
-            mainLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
-            for (int i = 0; i < 3; i++) {
+            mainLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT));
 
-                if (i == 0) {
-
-               LinearLayout layout = new LinearLayout(Conected.getInstans());
-               layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            mainLayout.setOrientation(LinearLayout.VERTICAL);
 
 
-                    layout.addView(content.get(0).draw());
+            for (int i = 1; i < 4; i++) {
+
+                if (size == 2){
+                    LinearLayout layout = new LinearLayout(Conected.getInstans());
+                    layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT));
+
+                    layout.setOrientation(LinearLayout.HORIZONTAL);
+
+                    for (; position < size && position < 3; position++) {
+
+                        View v = content.get(position).draw(1);
+                        final String URL = content.get(position).showContent();
+
+                        v.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Intent intent = new Intent(Conected.getInstans(),PhotoProfil.class);
+                                intent.putExtra(Keys.KEY_URL,URL);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                Conected.getInstans().startActivity(intent);
+                            }
+                        });
+
+                        layout.addView(v);
+                    }
+                    mainLayout.addView(layout);
+                    return mainLayout;
+
+                }
+
+                if (i == 1) {
+
+                    LinearLayout layout = new LinearLayout(Conected.getInstans());
+                    layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT));
+
+                    layout.setOrientation(LinearLayout.HORIZONTAL);
+
+                    View v = content.get(position).draw(1);
+                     final String URL = content.get(position).showContent();
+
+                    v.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(Conected.getInstans(),PhotoProfil.class);
+                            intent.putExtra(Keys.KEY_URL,URL);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            Conected.getInstans().startActivity(intent);
+                        }
+                    });
+
+                    layout.addView(v);
                     mainLayout.addView(layout);
                     position++;
                     continue;
                 }
 
                 if (i == 2) {
-
+                    float weight = 1;
+                    if (size>3){
+                        weight = (float) 0.5;
+                    }
                     LinearLayout layout = new LinearLayout(Conected.getInstans());
-                    layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                    layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT));
 
-                    layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
                     layout.setOrientation(LinearLayout.HORIZONTAL);
 
-                    for (; position < size && position<3; position++) {
-                        layout.addView(content.get(position).draw());
-                        layout.addView(layout);
+                    for (; position < size && position < 3; position++) {
 
+                        View v = content.get(position).draw(weight);
+                        final String URL = content.get(position).showContent();
+
+                        v.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Intent intent = new Intent(Conected.getInstans(),PhotoProfil.class);
+                                intent.putExtra(Keys.KEY_URL,URL);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                Conected.getInstans().startActivity(intent);
+                            }
+                        });
+
+                        layout.addView(v);
                     }
                     mainLayout.addView(layout);
                     continue;
                 }
-                if ( i == 3) {
+
+                if (i == 3) {
+                    float weight = 1;
+                    if (size>3){
+                        weight = (float) 1/(size-3);
+                    }
 
                     LinearLayout layout = new LinearLayout(Conected.getInstans());
-                    layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                    layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT));
 
                     layout.setOrientation(LinearLayout.HORIZONTAL);
 
 
                     for (; position < size; position++) {
-                        layout.addView(content.get(position).draw());
-                        layout.addView(layout);
+                        View v = content.get(position).draw(weight);
+                        final String URL = content.get(position).showContent();
+
+                        v.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Intent intent = new Intent(Conected.getInstans(),PhotoProfil.class);
+                                intent.putExtra(Keys.KEY_URL,URL);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                Conected.getInstans().startActivity(intent);
+                            }
+                        });
+                        layout.addView(v);
 
                     }
                     mainLayout.addView(layout);
                 }
             }
-                return mainLayout;
+            return mainLayout;
         }
-            return new LinearLayout(Conected.getInstans());
+        return new LinearLayout(Conected.getInstans());
     }
 }
