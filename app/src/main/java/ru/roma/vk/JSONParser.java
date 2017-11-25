@@ -226,9 +226,11 @@ public class JSONParser {
         }
         } catch (JSONException e) {
             e.printStackTrace();
+            return messages;
         }
         catch (Exception e){
             e.printStackTrace();
+            return messages;
         }
         return messages;
     }

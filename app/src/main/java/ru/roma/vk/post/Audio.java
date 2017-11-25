@@ -10,7 +10,7 @@ import ru.roma.vk.post.Attachment;
 
 public class Audio extends Attachment {
     @Override
-    public View draw(float weight) {
+    public View draw() {
         return null;
     }
 

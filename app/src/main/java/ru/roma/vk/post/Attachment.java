@@ -46,7 +46,7 @@ public abstract class Attachment {
         }
     }
 
-    public abstract View draw(float weight);
+    public abstract View draw();
 
     public abstract String showContent();
 

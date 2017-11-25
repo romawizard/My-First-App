@@ -57,13 +57,13 @@ public class Photo extends Attachment {
     private long date;
 
     @Override
-    public View draw(float weight) {
+    public View draw() {
         LayoutInflater inflater = (LayoutInflater) Conected.getInstans().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         View view = inflater.inflate(R.layout.view_photo, null);
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT,weight);
+                ViewGroup.LayoutParams.WRAP_CONTENT,1);
 
         view.setLayoutParams(params);
 

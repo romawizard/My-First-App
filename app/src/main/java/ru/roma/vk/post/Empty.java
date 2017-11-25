@@ -13,7 +13,7 @@ import ru.roma.vk.Conected;
 
 public class Empty extends Attachment {
     @Override
-    public View draw(float weigh) {
+    public View draw() {
         return new LinearLayout(Conected.getInstans());
     }
 
