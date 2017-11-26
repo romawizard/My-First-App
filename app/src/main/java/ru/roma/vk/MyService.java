@@ -19,9 +19,6 @@ public class MyService extends FirebaseInstanceIdService {
         Log.d("my log", "Refreshed token : " + refreshedToken);
         getSharedPreferences(Keys.MAINPREF, MODE_PRIVATE).edit().putString(Keys.TOKEN_NOTIF, refreshedToken).commit();
 
-
-
-
         while (true) {
             String token = getSharedPreferences(Keys.MAINPREF, MODE_PRIVATE).getString(Keys.TOKEN, null);
             if (!TextUtils.isEmpty(token)) {
@@ -36,6 +33,5 @@ public class MyService extends FirebaseInstanceIdService {
             }
         }
     }
-
 
 }

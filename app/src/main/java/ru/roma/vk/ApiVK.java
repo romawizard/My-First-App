@@ -134,8 +134,13 @@ public class ApiVK implements DataInformation {
 
         String androidID = Settings.Secure.getString(Conected.getInstans().getContentResolver(), Settings.Secure.ANDROID_ID);
 
-        String URLQuery = "https://api.vk.com/method/account.registerDevice?token=" + nonifToken + "&device_id=" + androidID + "&access_token=" + TOKEN + "&v=5.68";
+        String json = "{\"msg\":\"on\", \"chat\":[\"no_sound\",\"no_text\"], \"friend\":\"on\", \"reply\":\"on\", \"mention\":\"fr_of_fr\"}";
+        json = URLEncoder.encode(json);
+        String URLQuery = "https://api.vk.com/method/account.registerDevice?token=" + nonifToken + "&device_id="
+                + androidID + "&access_token=" + TOKEN + "&v=5.68";
 
+
+//         + "&setting=" + json
         return JSONParser.connectNotifiny(conect(URLQuery));
     }
 

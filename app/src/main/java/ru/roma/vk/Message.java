@@ -1,7 +1,5 @@
 package ru.roma.vk;
 
-import android.content.Intent;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -155,16 +153,13 @@ public class Message {
 
         for (; startPosition < size && startPosition < finishPosition; startPosition++) {
 
-            View v = content.get(startPosition).draw();
-            final String URL = content.get(startPosition).showContent();
+            final Attachment attach = content.get(startPosition);
+            View v = attach.draw();
 
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(Conected.getInstans(), PhotoProfil.class);
-                    intent.putExtra(Keys.KEY_URL, URL);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    Conected.getInstans().startActivity(intent);
+                   attach.doAction();
                 }
             });
 

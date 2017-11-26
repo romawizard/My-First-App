@@ -22,7 +22,7 @@ public abstract class Attachment {
 
     private final static String PHOTO = "photo";
     private final static String VIDEO = "video";
-
+    private final static String AUDIO = "audio";
 
     private static Attachment createObject(JSONObject jsonObject, Type type) {
 
@@ -41,6 +41,8 @@ public abstract class Attachment {
                 return createObject(jsonObject, Photo.class);
             case VIDEO :
                 return createObject(jsonObject, Video.class);
+            case  AUDIO:
+                return createObject(jsonObject, Audio.class);
             default:
                 return createObject(jsonObject,Empty.class);
         }
@@ -48,6 +50,6 @@ public abstract class Attachment {
 
     public abstract View draw();
 
-    public abstract String showContent();
+    public abstract void doAction();
 
 }

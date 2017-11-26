@@ -1,6 +1,7 @@
 package ru.roma.vk.post;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.LinearLayout;
 import ru.roma.vk.Conected;
 import ru.roma.vk.DownloadFile;
 import ru.roma.vk.Keys;
+import ru.roma.vk.PhotoProfil;
 import ru.roma.vk.R;
 
 /**
@@ -77,8 +79,11 @@ public class Photo extends Attachment {
     }
 
     @Override
-    public String showContent() {
-        return getPhoto_604();
+    public void doAction() {
+        Intent intent = new Intent(Conected.getInstans(), PhotoProfil.class);
+        intent.putExtra(Keys.KEY_URL, photo_604);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        Conected.getInstans().startActivity(intent);
     }
 
     @Override

@@ -18,7 +18,6 @@ public class Empty extends Attachment {
     }
 
     @Override
-    public String showContent() {
-        return null;
+    public void doAction() {
     }
 }

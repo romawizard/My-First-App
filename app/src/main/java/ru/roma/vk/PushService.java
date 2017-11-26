@@ -29,7 +29,7 @@ public class PushService extends FirebaseMessagingService{
         super.onMessageReceived(remoteMessage);
 
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-        Log.d("my log", "Refreshed token: " + refreshedToken);
+        Log.d("my log", "BODY: " + remoteMessage.getNotification().getBody());
 
         sendNotification(remoteMessage.getNotification().getBody());
 
