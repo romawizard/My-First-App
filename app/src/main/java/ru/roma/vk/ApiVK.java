@@ -134,13 +134,18 @@ public class ApiVK implements DataInformation {
 
         String androidID = Settings.Secure.getString(Conected.getInstans().getContentResolver(), Settings.Secure.ANDROID_ID);
 
-        String json = "{\"msg\":\"on\", \"chat\":[\"no_sound\",\"no_text\"], \"friend\":\"on\", \"reply\":\"on\", \"mention\":\"fr_of_fr\"}";
-        json = URLEncoder.encode(json);
+        String settings = "{\"msg\":\"on\", \"chat\":[\"no_sound\",\"no_text\"], \"friend\":\"on\", \"reply\":\"on\", \"mention\":\"fr_of_fr\"}";
+        try {
+            settings = URLEncoder.encode(settings,"utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         String URLQuery = "https://api.vk.com/method/account.registerDevice?token=" + nonifToken + "&device_id="
-                + androidID + "&access_token=" + TOKEN + "&v=5.68";
+                + androidID +  "&setting=" + settings + "&access_token=" + TOKEN + "&v=5.68";
 
+        Log.d(Keys.LOG,"Adnroid Id = " + androidID);
 
-//         + "&setting=" + json
+//         + "&setting=" + settinds
         return JSONParser.connectNotifiny(conect(URLQuery));
     }
 

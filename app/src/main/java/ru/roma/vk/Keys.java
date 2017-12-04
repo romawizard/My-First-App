@@ -19,4 +19,7 @@ public class Keys {
 
     public static final String KEY_INTENT = "intent";
     public static final String KEY_URL = "URL";
+
+    public static final String KEY_TITLE = "title";
+    public static final String KEY_ARTIST = "artist";
 }

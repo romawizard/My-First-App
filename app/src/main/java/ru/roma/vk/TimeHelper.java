@@ -101,6 +101,10 @@ public class TimeHelper {
         return  lastSeen;
     }
 
+    public static String getFormat(int time){
+        int shortTime = time/1000;
+        return String.format("%02d:%02d", shortTime / 60 , shortTime % 60);
+    }
 
     private String getMounth(int moun) {
         String mounth = "";
