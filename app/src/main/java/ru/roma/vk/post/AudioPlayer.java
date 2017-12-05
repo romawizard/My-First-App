@@ -4,7 +4,9 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Button;
@@ -18,11 +20,13 @@ import butterknife.OnClick;
 import ru.roma.vk.R;
 import ru.roma.vk.TimeHelper;
 
+
 public class AudioPlayer extends AppCompatActivity {
 
     private AudioService service;
     private boolean isConnected = false;
     private boolean mUserIsSeeking = false;
+    private Handler handler;
 
     @BindView(R.id.player_progress_bar)
     SeekBar playerSeekBar;
@@ -51,13 +55,7 @@ public class AudioPlayer extends AppCompatActivity {
         setContentView(R.layout.activity_audio_player);
         ButterKnife.bind(this);
         initializeSeekBar();
-
-    }
-
-    private void initializeSeekBarListener() {
-        if (service!= null){
-            service.setPlaybackInfoListener(new PlaybackListener());
-        }
+        initializeHandler();
     }
 
     private void initializeSeekBar() {
@@ -102,6 +100,14 @@ public class AudioPlayer extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (service != null){
+            service.stopUpdatingCallbackWithPosition(true);
+        }
+    }
+
     @OnClick(R.id.button_stop)
     public void onClickStop() {
         service.stop();
@@ -111,7 +117,7 @@ public class AudioPlayer extends AppCompatActivity {
 
     @OnClick(R.id.button_play)
     public void onClickPlay() {
-        service.pause();
+        service.pausePlay();
         buttonStop.setSelected(false);
         if (buttonPlay.isSelected()) {
             buttonPlay.setSelected(false);
@@ -125,7 +131,7 @@ public class AudioPlayer extends AppCompatActivity {
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             AudioService.AudioBinder binder = (AudioService.AudioBinder) iBinder;
             service = binder.getService();
-            initializeSeekBarListener();
+            service.setPlaybackInfoListener(new PlaybackListener());
             isConnected = true;
             buttonPlay.setSelected(true);
             playerArtist.setText(service.getArtist());
@@ -140,7 +146,7 @@ public class AudioPlayer extends AppCompatActivity {
     };
 
     public void refreshTime(int duration, int position){
-        timeLeft.setText(TimeHelper.getFormat(duration));
+        timeLeft.setText("-" + TimeHelper.getFormat(duration));
         timeFulfilled.setText(TimeHelper.getFormat(position));
     }
 
@@ -154,20 +160,38 @@ public class AudioPlayer extends AppCompatActivity {
         }
 
         @Override
-        void onDurationChanged(int duration) {
+        void onDurationChanged(final int duration) {
             this.duration = duration;
             Log.d("PLAYER", "onDurationChanged = "+ this.duration);
             playerSeekBar.setMax(duration);
-            refreshTime(duration,0);
+            Thread t = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Message message = Message.obtain();
+                    message.arg1 = duration;
+                    message.arg2 = 0;
+                    handler.sendMessage(message);
+                }
+            });
+            t.start();
         }
 
         @Override
-        void onPositionChanged(int position) {
+        void onPositionChanged(final int position) {
             if (!mUserIsSeeking) {
                 playerSeekBar.setProgress(position);
-                int leftDuration = (duration - position);
+                final int leftDuration = (duration - position);
                 Log.d("PLAYER", "onPositionChanged = "+ leftDuration);
-                refreshTime(leftDuration,position);
+                Thread t = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Message message = Message.obtain();
+                        message.arg1 = leftDuration;
+                        message.arg2 = position;
+                        handler.sendMessage(message);
+                    }
+                });
+                t.start();
             }
         }
 
@@ -182,4 +206,13 @@ public class AudioPlayer extends AppCompatActivity {
         }
     }
 
+    private void initializeHandler(){
+        handler = new Handler(new Handler.Callback() {
+            @Override
+            public boolean handleMessage(Message message) {
+                refreshTime(message.arg1,message.arg2);
+                return false;
+            }
+        });
+    }
 }

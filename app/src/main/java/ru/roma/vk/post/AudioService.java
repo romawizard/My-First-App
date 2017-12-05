@@ -51,7 +51,6 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
         return binder;
     }
 
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
@@ -67,6 +66,7 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
     @Override
     public void onPrepared(MediaPlayer mediaPlayer) {
         mediaPlayer.start();
+        showNotification();
     }
 
     public void releaseMP() {
@@ -109,17 +109,19 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
         }
     }
 
-    public void pause() {
+    public void pausePlay() {
         if (mp != null && mp.isPlaying()) {
             mp.pause();
+            stopUpdatingCallbackWithPosition(false);
         } else {
             if (isStoop) {
                 connect();
-                startUpdatingCallbackWithPosition();
+
                 isStoop = false;
             } else {
                 mp.start();
             }
+            startUpdatingCallbackWithPosition();
         }
     }
 
@@ -133,7 +135,6 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
             mp.setDataSource(URL);
             mp.prepareAsync();
             mp.setOnPreparedListener(this);
-            showNotification();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -184,7 +185,7 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
         );
     }
 
-    private void stopUpdatingCallbackWithPosition(boolean resetUIPlaybackPosition) {
+    public void stopUpdatingCallbackWithPosition(boolean resetUIPlaybackPosition) {
         if (mExecutor != null) {
             mExecutor.shutdownNow();
             mExecutor = null;
@@ -197,9 +198,14 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
 
     private void updateProgressCallbackTask() {
         if (mp != null && mp.isPlaying()) {
-            int currentPosition = mp.getCurrentPosition();
-            if (mListener != null) {
-                mListener.onPositionChanged(currentPosition);
+            try {
+                final int currentPosition = mp.getCurrentPosition();
+                if (mListener != null) {
+                    mListener.onPositionChanged(currentPosition);
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+                Log.d(Keys.LOG,"EXEPTION IN updateProgressCallbackTask()");
             }
         }
     }
