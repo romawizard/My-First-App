@@ -10,7 +10,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
-        android:name=".Conected"
+        android:name=".MainApplication"
         android:allowBackup="true"
         android:icon="@drawable/logo"
         android:label="@string/app_name"
@@ -19,14 +19,14 @@
         android:theme="@style/AppTheme">
         <service android:name=".post.AudioService" />
         <service
-            android:name=".PushService"
+            android:name=".services.PushService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
         <service
-            android:name=".MyService"
+            android:name=".services.MyService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
@@ -37,7 +37,7 @@
             android:name="com.vk.sdk.VKServiceActivity"
             android:label="ServiceActivity"
             android:theme="@style/VK.Transparent" />
-        <activity android:name=".LoginActivity">
+        <activity android:name=".activitys.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -45,13 +45,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".activitys.MainActivity"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".singUpActivity" />
+        <activity android:name=".activitys.singUpActivity" />
         <activity android:name=".UserActivity" />
         <activity android:name=".MessageActivity" />
-        <activity android:name=".PhotoProfil" />
-        <activity android:name=".post.AudioPlayer"></activity>
+        <activity android:name=".PhotoActivity" />
+        <activity android:name=".post.AudioPlayer" />
+        <activity android:name=".post.ChoseFile"></activity>
     </application>
 
 </manifest>

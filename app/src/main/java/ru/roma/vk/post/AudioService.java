@@ -11,6 +11,7 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
+import android.text.TextUtils;
 import android.util.Log;
 
 import java.io.IOException;
@@ -18,7 +19,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import ru.roma.vk.Keys;
+import ru.roma.vk.holders.Keys;
 import ru.roma.vk.R;
 
 /**
@@ -28,12 +29,14 @@ import ru.roma.vk.R;
 public class AudioService extends Service implements MediaPlayer.OnPreparedListener {
 
     public static final int PLAYBACK_POSITION_REFRESH_INTERVAL_MS = 1000;
+    public static final String STOPSERVICE = "stop";
     private String URL;
     private MediaPlayer mp;
     private String title;
     private String artist;
     private AudioBinder binder;
     private boolean isStoop = false;
+    private boolean isPrepare = false;
     private PlayBackInfoListener mListener;
     private ScheduledExecutorService mExecutor;
     private Runnable mSeekbarPositionUpdateTask;
@@ -54,6 +57,12 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
+        String action = intent.getStringExtra(STOPSERVICE);
+
+        if (!TextUtils.isEmpty(action) && action == STOPSERVICE) {
+            stopSelf();
+        }
+
         releaseMP();
 
         URL = intent.getStringExtra(Keys.KEY_URL);
@@ -65,7 +74,9 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
 
     @Override
     public void onPrepared(MediaPlayer mediaPlayer) {
+        isPrepare = true;
         mediaPlayer.start();
+        initializeProgressCallback();
         showNotification();
     }
 
@@ -85,20 +96,28 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
         Intent intent = new Intent(this, AudioPlayer.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.musique_audio_music)
                 .setLargeIcon(BitmapFactory.decodeResource(this.getResources(), R.drawable.musique_audio_music))
                 .setContentTitle(title)
                 .setContentText(artist)
-                .setAutoCancel(true)
+                .setAutoCancel(false)
                 .setContentIntent(pendingIntent);
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         notificationManager.notify(0, notificationBuilder.build());
+    }
+
+    public void stopServiseMusic() {
+        Log.d(Keys.LOG, "stopService");
+        releaseMP();
+        stopSelf();
+
     }
 
     public void stop() {
@@ -116,7 +135,6 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
         } else {
             if (isStoop) {
                 connect();
-
                 isStoop = false;
             } else {
                 mp.start();
@@ -150,17 +168,18 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
         return artist;
     }
 
-    public void seekTo(int position){
-        if (mp!= null){
+    public void seekTo(int position) {
+        if (mp != null) {
             mp.seekTo(position);
         }
     }
 
     public void initializeProgressCallback() {
-    final int duration = mp.getDuration();
-        if (mListener != null) {
+        final int duration = mp.getDuration();
+        final int current = mp.getCurrentPosition();
+        if (mListener != null && isPrepare) {
             mListener.onDurationChanged(duration);
-            mListener.onPositionChanged(0);
+            mListener.onPositionChanged(current);
         }
     }
 
@@ -172,7 +191,7 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
             mSeekbarPositionUpdateTask = new Runnable() {
                 @Override
                 public void run() {
-                    Log.d(Keys.LOG,"RUNNABLE");
+                    Log.d(Keys.LOG, "RUNNABLE");
                     updateProgressCallbackTask();
                 }
             };
@@ -203,18 +222,20 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
                 if (mListener != null) {
                     mListener.onPositionChanged(currentPosition);
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
-                Log.d(Keys.LOG,"EXEPTION IN updateProgressCallbackTask()");
+                Log.d(Keys.LOG, "EXEPTION IN updateProgressCallbackTask()");
             }
         }
     }
 
     public void setPlaybackInfoListener(PlayBackInfoListener listener) {
+        if (mListener != null){
+            mListener.onDisconect();
+        }
         mListener = listener;
         initializeProgressCallback();
         startUpdatingCallbackWithPosition();
-
     }
 
     public class AudioBinder extends Binder {

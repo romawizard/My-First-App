@@ -4,14 +4,17 @@ import android.content.ContentValues;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import java.sql.Ref;
 import java.util.List;
+
+import ru.roma.vk.holders.Message;
+import ru.roma.vk.utilitys.Paginable;
+import ru.roma.vk.utilitys.Pagination;
 
 /**
  * Created by Ilan on 28.10.2017.
  */
 
-public class MessageModel implements Paginable{
+public class MessageModel implements Paginable {
 
     private final String KEY_TEXT = "text";
     private final  String KEY_ID = "id";

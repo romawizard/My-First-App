@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -16,6 +15,10 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import ru.roma.vk.holders.Friend;
+import ru.roma.vk.holders.Keys;
+import ru.roma.vk.utilitys.DownloadFile;
+import ru.roma.vk.utilitys.TimeHelper;
 
 /**
  * Created by Ilan on 28.09.2017.
@@ -107,7 +110,7 @@ public class UserActivity extends AppCompatActivity {
 
     @OnClick(R.id.photo_user)
     public  void onClick(){
-        Intent intent = new Intent(this,PhotoProfil.class);
+        Intent intent = new Intent(this,PhotoActivity.class);
         intent.putExtra(Keys.KEY_URL,friend.getURLPhoto());
         startActivity(intent);
     }

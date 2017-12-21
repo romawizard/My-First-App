@@ -19,6 +19,13 @@ import java.util.ArrayList;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import ru.roma.vk.dataBase.DataInformation;
+import ru.roma.vk.holders.Dialogs;
+import ru.roma.vk.holders.Friend;
+import ru.roma.vk.holders.Keys;
+import ru.roma.vk.holders.Message;
+import ru.roma.vk.utilitys.JSONParser;
+
 
 /**
  * Created by Ilan on 12.09.2017.
@@ -30,7 +37,7 @@ public class ApiVK implements DataInformation {
     private final String TOKEN;
 
     private ApiVK() {
-        TOKEN = Conected.getInstans().getSharedPreferences(Keys.MAINPREF, Context.MODE_PRIVATE).getString(Keys.TOKEN, "no token");
+        TOKEN = MainApplication.getInstans().getSharedPreferences(Keys.MAINPREF, Context.MODE_PRIVATE).getString(Keys.TOKEN, "no token");
     }
 
     static public ApiVK getInstance() {
@@ -82,7 +89,7 @@ public class ApiVK implements DataInformation {
 
         ArrayList<Dialogs> dialog = new JSONParser().parseDialog(conect(URLQuery));
 
-        Log.d(Keys.LOG, TOKEN);
+        Log.d(Keys.LOG, "TOKEN VK = " + TOKEN);
 
         return dialog;
     }
@@ -130,9 +137,9 @@ public class ApiVK implements DataInformation {
 
     public int nonification() {
 
-        String nonifToken = Conected.getInstans().getSharedPreferences(Keys.MAINPREF, Context.MODE_PRIVATE).getString(Keys.TOKEN_NOTIF, "no");
+        String nonifToken = MainApplication.getInstans().getSharedPreferences(Keys.MAINPREF, Context.MODE_PRIVATE).getString(Keys.TOKEN_NOTIF, "no");
 
-        String androidID = Settings.Secure.getString(Conected.getInstans().getContentResolver(), Settings.Secure.ANDROID_ID);
+        String androidID = Settings.Secure.getString(MainApplication.getInstans().getContentResolver(), Settings.Secure.ANDROID_ID);
 
         String settings = "{\"msg\":\"on\", \"chat\":[\"no_sound\",\"no_text\"], \"friend\":\"on\", \"reply\":\"on\", \"mention\":\"fr_of_fr\"}";
         try {
@@ -141,7 +148,7 @@ public class ApiVK implements DataInformation {
             e.printStackTrace();
         }
         String URLQuery = "https://api.vk.com/method/account.registerDevice?token=" + nonifToken + "&device_id="
-                + androidID +  "&setting=" + settings + "&access_token=" + TOKEN + "&v=5.68";
+                + androidID +  "&setting=" + settings + "&push_provider=fcm" +  "&access_token=" + TOKEN + "&v=5.69";
 
         Log.d(Keys.LOG,"Adnroid Id = " + androidID);
 

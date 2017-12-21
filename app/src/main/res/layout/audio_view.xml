@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:padding="5dp">
 
-    <ImageView
+    <Button
         android:id="@+id/audio_button"
         android:layout_width="40dp"
         android:layout_height="40dp"
@@ -36,25 +36,34 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
-            <ProgressBar
-                android:id="@+id/audio_progressBar"
+            <SeekBar
+                android:id="@+id/audio_seekBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:max="100"
-                android:progress="100"
-                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
                 />
 
-            <TextView
-                android:id="@+id/time_audio"
-                android:layout_width="40dp"
-                android:layout_height="wrap_content"
-                android:textSize="12sp"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/time_fulfilled_audio"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/time_audio"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:textSize="12sp"/>
+            </RelativeLayout>
+
         </LinearLayout>
 
     </LinearLayout>

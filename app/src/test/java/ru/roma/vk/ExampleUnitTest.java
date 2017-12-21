@@ -4,6 +4,9 @@ import org.junit.Test;
 
 import java.util.List;
 
+import ru.roma.vk.utilitys.Paginable;
+import ru.roma.vk.utilitys.Pagination;
+
 import static org.junit.Assert.*;
 
 /**

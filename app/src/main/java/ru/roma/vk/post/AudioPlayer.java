@@ -18,16 +18,18 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ru.roma.vk.R;
-import ru.roma.vk.TimeHelper;
+import ru.roma.vk.utilitys.TimeHelper;
 
 
 public class AudioPlayer extends AppCompatActivity {
 
     private AudioService service;
+    private Handler handler;
     private boolean isConnected = false;
     private boolean mUserIsSeeking = false;
-    private Handler handler;
 
+    @BindView(R.id.button_stop_service)
+    Button buttonStopService;
     @BindView(R.id.player_progress_bar)
     SeekBar playerSeekBar;
     @BindView(R.id.time_fulfilled)
@@ -65,8 +67,8 @@ public class AudioPlayer extends AppCompatActivity {
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                if (b){
-                    userSelectedPosition =i;
+                if (b) {
+                    userSelectedPosition = i;
                 }
             }
 
@@ -103,7 +105,7 @@ public class AudioPlayer extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (service != null){
+        if (service != null) {
             service.stopUpdatingCallbackWithPosition(true);
         }
     }
@@ -126,6 +128,12 @@ public class AudioPlayer extends AppCompatActivity {
         }
     }
 
+    @OnClick(R.id.button_stop_service)
+    public  void onStopServise(){
+        service.stopServiseMusic();
+        finish();
+    }
+
     private ServiceConnection connection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
@@ -133,7 +141,7 @@ public class AudioPlayer extends AppCompatActivity {
             service = binder.getService();
             service.setPlaybackInfoListener(new PlaybackListener());
             isConnected = true;
-            buttonPlay.setSelected(true);
+            buttonPlay.setSelected(service.isPlay());
             playerArtist.setText(service.getArtist());
             playerTitel.setText(service.getTitle());
 
@@ -145,24 +153,20 @@ public class AudioPlayer extends AppCompatActivity {
         }
     };
 
-    public void refreshTime(int duration, int position){
+    public void refreshTime(int duration, int position) {
         timeLeft.setText("-" + TimeHelper.getFormat(duration));
         timeFulfilled.setText(TimeHelper.getFormat(position));
     }
 
-    public class PlaybackListener extends PlayBackInfoListener {
+
+    public class PlaybackListener implements PlayBackInfoListener {
 
         private int duration;
 
         @Override
-        void onLogUpdated(String formattedMessage) {
-
-        }
-
-        @Override
-        void onDurationChanged(final int duration) {
+        public void onDurationChanged(final int duration) {
             this.duration = duration;
-            Log.d("PLAYER", "onDurationChanged = "+ this.duration);
+            Log.d("PLAYER", "onDurationChanged = " + this.duration);
             playerSeekBar.setMax(duration);
             Thread t = new Thread(new Runnable() {
                 @Override
@@ -177,11 +181,11 @@ public class AudioPlayer extends AppCompatActivity {
         }
 
         @Override
-        void onPositionChanged(final int position) {
+        public void onPositionChanged(final int position) {
             if (!mUserIsSeeking) {
                 playerSeekBar.setProgress(position);
                 final int leftDuration = (duration - position);
-                Log.d("PLAYER", "onPositionChanged = "+ leftDuration);
+                Log.d("PLAYER", "onPositionChanged = " + leftDuration);
                 Thread t = new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -196,21 +200,17 @@ public class AudioPlayer extends AppCompatActivity {
         }
 
         @Override
-        void onStateChanged(@State int state) {
-
+        public void onDisconect() {
+            service = null;
         }
 
-        @Override
-        void onPlaybackCompleted() {
-
-        }
     }
 
-    private void initializeHandler(){
+    private void initializeHandler() {
         handler = new Handler(new Handler.Callback() {
             @Override
             public boolean handleMessage(Message message) {
-                refreshTime(message.arg1,message.arg2);
+                refreshTime(message.arg1, message.arg2);
                 return false;
             }
         });

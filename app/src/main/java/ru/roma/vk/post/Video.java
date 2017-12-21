@@ -9,10 +9,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import ru.roma.vk.Conected;
-import ru.roma.vk.DownloadFile;
-import ru.roma.vk.Keys;
-import ru.roma.vk.PhotoProfil;
+import ru.roma.vk.MainApplication;
+import ru.roma.vk.PhotoActivity;
+import ru.roma.vk.utilitys.DownloadFile;
+import ru.roma.vk.holders.Keys;
 import ru.roma.vk.R;
 
 /**
@@ -33,7 +33,7 @@ public class Video extends Attachment {
 
     @Override
     public View draw() {
-        LayoutInflater inflater = (LayoutInflater) Conected.getInstans().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) MainApplication.getInstans().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         View view = inflater.inflate(R.layout.view_photo, null);
 
@@ -69,10 +69,10 @@ public class Video extends Attachment {
 
     @Override
     public void doAction() {
-        Intent intent = new Intent(Conected.getInstans(), PhotoProfil.class);
+        Intent intent = new Intent(MainApplication.getInstans(), PhotoActivity.class);
         intent.putExtra(Keys.KEY_URL,photo_320);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        Conected.getInstans().startActivity(intent);
+        MainApplication.getInstans().startActivity(intent);
     }
 
     @Override

@@ -1,6 +1,5 @@
 package ru.roma.vk.post;
 
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
@@ -9,10 +8,8 @@ import com.google.gson.Gson;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
 
-import ru.roma.vk.Keys;
+import ru.roma.vk.holders.Keys;
 
 /**
  * Created by Ilan on 08.11.2017.
