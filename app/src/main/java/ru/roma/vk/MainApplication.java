@@ -16,8 +16,6 @@ public class MainApplication extends android.app.Application {
 
 
     private static MainApplication instans ;
-    private static Retrofit retrofit;
-
 
     private static APIQuery query;
 
@@ -29,7 +27,7 @@ public class MainApplication extends android.app.Application {
         ImageLoaderConfiguration imageLoaderConfiguration = new ImageLoaderConfiguration.Builder(this).build();
         ImageLoader.getInstance().init(imageLoaderConfiguration);
 
-        retrofit = new Retrofit.Builder()
+        Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://api.vk.com/method/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();

@@ -1,33 +1,54 @@
 package ru.roma.vk;
 
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONStringer;
+
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import ru.roma.vk.adapters.MessageAdapter;
 import ru.roma.vk.holders.Keys;
 import ru.roma.vk.holders.Message;
+import ru.roma.vk.myRetrofit.ModelResponseLoadServer;
+import ru.roma.vk.myRetrofit.ModelResponseSaveMessagePhoto;
+import ru.roma.vk.myRetrofit.ModelUploadServer;
 import ru.roma.vk.utilitys.DownloadFile;
+import ru.roma.vk.utilitys.JSONParser;
 
 public class MessageActivity extends AppCompatActivity implements MessageView {
 
@@ -36,6 +57,8 @@ public class MessageActivity extends AppCompatActivity implements MessageView {
     private MessageAdapter messageAdapter;
     private MessagePresenter presenter;
     private EditText text;
+
+    private  String token;
 
     @BindView(R.id.content_layout)
     LinearLayout contentLayout;
@@ -49,6 +72,9 @@ public class MessageActivity extends AppCompatActivity implements MessageView {
     }
 
     private void init() {
+
+        token = getSharedPreferences(Keys.MAINPREF, Context.MODE_PRIVATE).getString(Keys.TOKEN, "no token");
+
 
         messageAdapter = new MessageAdapter(this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -74,15 +100,6 @@ public class MessageActivity extends AppCompatActivity implements MessageView {
 
         text = (EditText) findViewById(R.id.text_msg);
 
-        Button send = (Button) findViewById(R.id.send);
-        send.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d("my log", text.getText().toString());
-                presenter.sendMessage(text.getText().toString(), getId());
-                text.setText("");
-            }
-        });
 
         TextView name = (TextView) findViewById(R.id.name_msg);
         name.setText(getIntent().getStringExtra(Keys.KEY_NAME));
@@ -147,6 +164,14 @@ public class MessageActivity extends AppCompatActivity implements MessageView {
         startActivityForResult(chooseFile, ACTIVITY_CHOOSE_FILE);
     }
 
+    @OnClick(R.id.send)
+    public void onSendMessage(){
+        Log.d("my log", text.getText().toString());
+        presenter.sendMessage(text.getText().toString(), getId());
+        text.setText("");
+
+    }
+
     private void showChoosenFile(Intent data){
         final Uri imageUri = data.getData();
         InputStream imageStream = null;
@@ -167,6 +192,92 @@ public class MessageActivity extends AppCompatActivity implements MessageView {
 
     }
 
+    private void uploadServer(final File file){
+
+        MainApplication.getQuery().getUploadServer(token).enqueue(new Callback<ModelUploadServer>() {
+            @Override
+            public void onResponse(Call<ModelUploadServer> call, Response<ModelUploadServer> response) {
+                if (response.body() != null){
+                    Log.d(Keys.LOG, "RESPONSE RETROFIT = " + response.body());
+                    String urlUploadServer =  response.body().getResponse().getUploadUrl();
+                    uploadFile(urlUploadServer,file);
+                }else {
+                    Toast.makeText(MessageActivity.this,"null in the body",Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ModelUploadServer> call, Throwable t) {
+                Toast.makeText(MessageActivity.this,"error retrofit",Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+    private void uploadFile (String uploadServerURL, File file) {
+
+        // Создаем RequestBody
+        RequestBody requestFile =
+                RequestBody.create(MediaType.parse("multipart/form-data"), file);
+
+        // MultipartBody.Part используется, чтобы передать имя файла
+        MultipartBody.Part body =
+                MultipartBody.Part.createFormData("photo", file.getName(), requestFile);
+
+        // Выполняем запрос
+        Call<ModelResponseLoadServer> call = MainApplication.getQuery().loadPhoto(uploadServerURL, body);
+        call.enqueue(new Callback<ModelResponseLoadServer>() {
+            @Override
+            public void onResponse(Call<ModelResponseLoadServer> call, Response<ModelResponseLoadServer> response) {
+                Log.d("retrofit", "success");
+                Log.d(Keys.LOG,"response uploadserver = " + response.body());
+                ModelResponseLoadServer model= response.body();
+                savePhoto(model.getPhoto(),model.getServer(),model.getHash());
+
+            }
+
+            @Override
+            public void onFailure(Call<ModelResponseLoadServer> call, Throwable t) {
+                Log.d("retrofit", "error in the uploadFile");
+            }
+        });
+    }
+
+    private void savePhoto(String photo, Integer server, String hash) {
+
+
+
+        Call<ModelResponseSaveMessagePhoto> call = MainApplication.getQuery().savePhoto(photo,server,hash);
+        call.enqueue(new Callback<ModelResponseSaveMessagePhoto>() {
+            @Override
+            public void onResponse(Call<ModelResponseSaveMessagePhoto> call, Response<ModelResponseSaveMessagePhoto> response) {
+                Log.d(Keys.LOG, "savePhoto = " + response.raw());
+            }
+
+            @Override
+            public void onFailure(Call<ModelResponseSaveMessagePhoto> call, Throwable t) {
+                Log.d(Keys.LOG, "error in the savePhoto");
+            }
+        });
+    }
+
+    public String getRealPathFromURI( Uri contentUri) {
+        Cursor cursor = null;
+        try {
+            String[] proj = { MediaStore.Images.Media.DATA };
+            cursor = getContentResolver().query(contentUri,  proj, null, null, null);
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            String result = cursor.getString(column_index);
+            Log.d(Keys.LOG,"Result getRealPathFromURI = " + result);
+            return result;
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d(Keys.LOG, "onActivityResult");
@@ -174,7 +285,10 @@ public class MessageActivity extends AppCompatActivity implements MessageView {
             if (data != null) {
                 Log.d(Keys.LOG, "data != null");
                 showChoosenFile(data);
-
+                String realPath = getRealPathFromURI(data.getData());
+                File file = new File(realPath);
+                Log.d(Keys.LOG, "File from URI = " + file.toString());
+                uploadServer(file);
             }
         }
     }

@@ -1,7 +1,15 @@
 package ru.roma.vk.myRetrofit;
 
+import org.json.JSONObject;
+
+import okhttp3.MultipartBody;
 import retrofit2.Call;
+import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
+import retrofit2.http.Query;
+import retrofit2.http.Url;
 
 /**
  * Created by Ilan on 19.12.2017.
@@ -9,6 +17,14 @@ import retrofit2.http.POST;
 
 public interface APIQuery {
 
-    @POST("photos.getMessagesUploadServer?")
-    Call<ModelUploadServer> getUploadServer();
+    @GET("photos.getMessagesUploadServer")
+    Call<ModelUploadServer> getUploadServer(@Query("access_token")String token);
+
+    @Multipart
+    @POST
+    Call<ModelResponseLoadServer> loadPhoto(@Url String urlServer, @Part MultipartBody.Part file);
+
+    @GET("photos.saveMessagesPhoto")
+    Call<ModelResponseSaveMessagePhoto> savePhoto(@Query("photo")String photo, @Query("server") int server
+            , @Query("hash") String hash);
 }
