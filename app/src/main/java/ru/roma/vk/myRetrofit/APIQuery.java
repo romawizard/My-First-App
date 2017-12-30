@@ -4,6 +4,7 @@ import org.json.JSONObject;
 
 import okhttp3.MultipartBody;
 import retrofit2.Call;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
@@ -24,7 +25,8 @@ public interface APIQuery {
     @POST
     Call<ModelResponseLoadServer> loadPhoto(@Url String urlServer, @Part MultipartBody.Part file);
 
+    @FormUrlEncoded
     @GET("photos.saveMessagesPhoto")
     Call<ModelResponseSaveMessagePhoto> savePhoto(@Query("photo")String photo, @Query("server") int server
-            , @Query("hash") String hash);
+            , @Query("hash") String hash, @Query("access_token")String token);
 }

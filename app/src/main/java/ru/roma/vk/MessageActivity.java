@@ -231,6 +231,7 @@ public class MessageActivity extends AppCompatActivity implements MessageView {
             public void onResponse(Call<ModelResponseLoadServer> call, Response<ModelResponseLoadServer> response) {
                 Log.d("retrofit", "success");
                 Log.d(Keys.LOG,"response uploadserver = " + response.body());
+                Log.d(Keys.LOG,"raw response = " + response.raw());
                 ModelResponseLoadServer model= response.body();
                 savePhoto(model.getPhoto(),model.getServer(),model.getHash());
 
@@ -247,11 +248,22 @@ public class MessageActivity extends AppCompatActivity implements MessageView {
 
 
 
-        Call<ModelResponseSaveMessagePhoto> call = MainApplication.getQuery().savePhoto(photo,server,hash);
+        String result = "";
+        try {
+            result  = URLEncoder.encode(photo,"UTF-8");
+            Log.d(Keys.LOG,"result encoder = " + result);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+
+
+        Call<ModelResponseSaveMessagePhoto> call = MainApplication.getQuery().savePhoto(photo,server,hash,token);
         call.enqueue(new Callback<ModelResponseSaveMessagePhoto>() {
             @Override
             public void onResponse(Call<ModelResponseSaveMessagePhoto> call, Response<ModelResponseSaveMessagePhoto> response) {
-                Log.d(Keys.LOG, "savePhoto = " + response.raw());
+                Log.d(Keys.LOG, "save raw = " + response.raw());
+                Log.d(Keys.LOG, "savePhoto = " + response.body());
             }
 
             @Override
