@@ -16,6 +16,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -24,7 +25,9 @@ import ru.roma.vk.holders.Dialogs;
 import ru.roma.vk.holders.Friend;
 import ru.roma.vk.holders.Keys;
 import ru.roma.vk.holders.Message;
+import ru.roma.vk.myRetrofit.ModelResponseSaveMessagePhoto;
 import ru.roma.vk.utilitys.JSONParser;
+import ru.roma.vk.wall.WallPost;
 
 
 /**
@@ -37,7 +40,8 @@ public class ApiVK implements DataInformation {
     private final String TOKEN;
 
     private ApiVK() {
-        TOKEN = MainApplication.getInstans().getSharedPreferences(Keys.MAINPREF, Context.MODE_PRIVATE).getString(Keys.TOKEN, "no token");
+        TOKEN = MainApplication.getInstans()
+                .getSharedPreferences(Keys.MAINPREF, Context.MODE_PRIVATE).getString(Keys.TOKEN, "no token");
     }
 
     static public ApiVK getInstance() {
@@ -47,7 +51,7 @@ public class ApiVK implements DataInformation {
         return apiVK;
     }
 
-    private JSONObject conect(String url) {
+    private JSONObject connect(String url) {
 
         HttpsURLConnection connection;
         BufferedReader reader;
@@ -80,6 +84,7 @@ public class ApiVK implements DataInformation {
             e.printStackTrace();
         }
 
+        Log.d(Keys.LOG, "connect result = " + jsonObject.toString());
         return jsonObject;
     }
 
@@ -87,7 +92,7 @@ public class ApiVK implements DataInformation {
 
         String URLQuery = "https://api.vk.com/method/execute.fulldialog?offset=" + String.valueOf(offset) + "&access_token=" + TOKEN + "&v=5.68";
 
-        ArrayList<Dialogs> dialog = new JSONParser().parseDialog(conect(URLQuery));
+        ArrayList<Dialogs> dialog = new JSONParser().parseDialog(connect(URLQuery));
 
         Log.d(Keys.LOG, "TOKEN VK = " + TOKEN);
 
@@ -98,7 +103,7 @@ public class ApiVK implements DataInformation {
 
         String URLQuery = "https://api.vk.com/method/friends.get?fields=nickname,photo_100&order=hints&access_token=" + TOKEN;
 
-        return JSONParser.parseFriend(conect(URLQuery));
+        return JSONParser.parseFriend(connect(URLQuery));
     }
 
     @Override
@@ -106,7 +111,7 @@ public class ApiVK implements DataInformation {
 
         String URLQuery = "https://api.vk.com/method/users.get?user_ids=" + String.valueOf(id) + "&fields=bdate,city,last_seen,country,status,sex,home_town,about,education,photo_max_orig,online&access_token=" + TOKEN;
 
-        ArrayList<Friend> friends = new JSONParser().parseFriend(conect(URLQuery));
+        ArrayList<Friend> friends = new JSONParser().parseFriend(connect(URLQuery));
 
         return friends.get(0);
     }
@@ -116,7 +121,7 @@ public class ApiVK implements DataInformation {
 
         String URLQuery = "https://api.vk.com/method/messages.getHistory?user_id=" + userId + "&offset=" + offset + "&access_token=" + TOKEN + "&v=5.68";
 
-        return new JSONParser().parseMessage(conect(URLQuery));
+        return new JSONParser().parseMessage(connect(URLQuery));
     }
 
     @Override
@@ -132,7 +137,23 @@ public class ApiVK implements DataInformation {
 
         String URLQuery = "https://api.vk.com/method/messages.send?user_id=" + id + "&message=" + utf + "&access_token=" + TOKEN + "&v=5.68";
         Log.d("my log", URLQuery);
-        conect(URLQuery);
+        connect(URLQuery);
+    }
+
+    public void sendMessage(String text, int id, int ownerId, int mediaId) {
+
+        String utf = "";
+
+        try {
+            utf = URLEncoder.encode(text, "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            Log.d("my log", "кодировка не прошла");
+        }
+
+        String URLQuery = "https://api.vk.com/method/messages.send?user_id=" + id + "&message=" + utf +"&attachment=photo"
+                + ownerId + "_" + mediaId + "&access_token=" + TOKEN + "&v=5.68";
+        Log.d("my log", URLQuery);
+        connect(URLQuery);
     }
 
     public int nonification() {
@@ -153,13 +174,28 @@ public class ApiVK implements DataInformation {
         Log.d(Keys.LOG,"Adnroid Id = " + androidID);
 
 //         + "&setting=" + settinds
-        return JSONParser.connectNotifiny(conect(URLQuery));
+        return JSONParser.connectNotifiny(connect(URLQuery));
     }
 
     public String getUserPhoto(int userId) {
 
         final String URLQuery = "https://api.vk.com/method/users.get?user_ids=" + userId + "&fields=photo_100&access_token=" + TOKEN + "&v=5.68";
 
-        return JSONParser.parseUserPhoto(conect(URLQuery));
+        return JSONParser.parseUserPhoto(connect(URLQuery));
+    }
+
+    public List<ModelResponseSaveMessagePhoto.Response> savePhoto(String photo, int server, String hash){
+
+        final String URLQuery = "https://api.vk.com/method/photos.saveMessagesPhoto?server="
+                + server + "&photo=" + photo + "&hash=" + hash +"&access_token=" + TOKEN + "&v=5.68";
+        return JSONParser.parseSavePhoto(connect(URLQuery));
+    }
+
+    public List<WallPost> getWallPost(int userId, int offset){
+
+        String URLQuery = "https://api.vk.com/method/wall.get?offset=" + offset + "&owner_id="
+                + userId + "&access_token=" + TOKEN + "&v=5.59";
+
+        return JSONParser.parseWall(connect(URLQuery));
     }
 }

@@ -3,6 +3,8 @@ package ru.roma.vk.utilitys;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.google.gson.Gson;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,7 +18,9 @@ import ru.roma.vk.holders.Dialogs;
 import ru.roma.vk.holders.Friend;
 import ru.roma.vk.holders.Keys;
 import ru.roma.vk.holders.Message;
+import ru.roma.vk.myRetrofit.ModelResponseSaveMessagePhoto;
 import ru.roma.vk.post.Attachment;
+import ru.roma.vk.wall.WallPost;
 
 /**
  * Created by Ilan on 09.10.2017.
@@ -269,5 +273,80 @@ public class JSONParser {
         return result;
     }
 
+    public static List<ModelResponseSaveMessagePhoto.Response> parseSavePhoto(JSONObject conect) {
+
+        ArrayList<ModelResponseSaveMessagePhoto.Response> data = new ArrayList();
+
+        JSONArray jsonArray = null;
+        try {
+            jsonArray = conect.getJSONArray("response");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        for (int i=0; i<jsonArray.length();i++){
+            JSONObject object = jsonArray.optJSONObject(i);
+
+            Gson gson = new Gson();
+            ModelResponseSaveMessagePhoto.Response responseObject = gson.fromJson(object.toString()
+                    ,ModelResponseSaveMessagePhoto.Response.class);
+            data.add(responseObject);
+
+        }
+        return data;
+    }
+
+    public static List<WallPost> parseWall(JSONObject connect) {
+
+        List<WallPost> data = new ArrayList<>();
+
+        JSONArray items = null;
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = connect.getJSONObject("response");
+            items = jsonObject.getJSONArray("items");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        WallPost.setCount(jsonObject.optInt("count"));
+
+        for (int i = 0; i<items.length();i++){
+
+
+            Gson gson = new Gson();
+
+            JSONObject oneObject = items.optJSONObject(i);
+            WallPost post = gson.fromJson(oneObject.toString(),WallPost.class);
+
+            if (oneObject.has("attachment")) {
+
+                List<Attachment> allAttacments = new ArrayList<>();
+
+
+                JSONArray attachmentsArray = jsonObject.optJSONArray("attachments");
+
+                for (int n = 0; n < attachmentsArray.length(); n++) {
+                    JSONObject oneAttach = attachmentsArray.optJSONObject(n);
+                    String type = oneAttach.optString("type");
+
+
+                    JSONObject content = oneAttach.optJSONObject(type);
+                    Log.d(Keys.LOG, "json = " + content.toString());
+                    Attachment attachment = Attachment.getInstance(type, content);
+                    allAttacments.add(attachment);
+
+                }
+                post.setAttachments(allAttacments);
+            }
+
+            if (oneObject.has("copy_history")){
+
+            }
+            data.add(post);
+        }
+        return data;
+
+    }
 }
 

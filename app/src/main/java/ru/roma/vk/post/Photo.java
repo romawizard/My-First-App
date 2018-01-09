@@ -20,6 +20,11 @@ import ru.roma.vk.R;
 
 public class Photo extends Attachment {
 
+    private String photo_604;
+    private String text;
+    private String access_key;
+    private long date;
+
     public String getPhoto_604() {
         return photo_604;
     }
@@ -52,10 +57,6 @@ public class Photo extends Attachment {
         this.date = date;
     }
 
-    private String photo_604;
-    private String text;
-    private String access_key;
-    private long date;
 
     @Override
     public View draw() {

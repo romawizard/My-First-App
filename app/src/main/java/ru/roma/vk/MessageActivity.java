@@ -18,37 +18,18 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONStringer;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import ru.roma.vk.adapters.MessageAdapter;
 import ru.roma.vk.holders.Keys;
 import ru.roma.vk.holders.Message;
 import ru.roma.vk.myRetrofit.ModelResponseLoadServer;
-import ru.roma.vk.myRetrofit.ModelResponseSaveMessagePhoto;
-import ru.roma.vk.myRetrofit.ModelUploadServer;
 import ru.roma.vk.utilitys.DownloadFile;
-import ru.roma.vk.utilitys.JSONParser;
 
 public class MessageActivity extends AppCompatActivity implements MessageView {
 
@@ -57,8 +38,7 @@ public class MessageActivity extends AppCompatActivity implements MessageView {
     private MessageAdapter messageAdapter;
     private MessagePresenter presenter;
     private EditText text;
-
-    private  String token;
+    private String token;
 
     @BindView(R.id.content_layout)
     LinearLayout contentLayout;
@@ -192,88 +172,35 @@ public class MessageActivity extends AppCompatActivity implements MessageView {
 
     }
 
-    private void uploadServer(final File file){
-
-        MainApplication.getQuery().getUploadServer(token).enqueue(new Callback<ModelUploadServer>() {
-            @Override
-            public void onResponse(Call<ModelUploadServer> call, Response<ModelUploadServer> response) {
-                if (response.body() != null){
-                    Log.d(Keys.LOG, "RESPONSE RETROFIT = " + response.body());
-                    String urlUploadServer =  response.body().getResponse().getUploadUrl();
-                    uploadFile(urlUploadServer,file);
-                }else {
-                    Toast.makeText(MessageActivity.this,"null in the body",Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ModelUploadServer> call, Throwable t) {
-                Toast.makeText(MessageActivity.this,"error retrofit",Toast.LENGTH_SHORT).show();
-            }
-        });
+    private void savePhoto(ModelResponseLoadServer model) {
+//
+//
+//        String result = "";
+//        try {
+//            result  = URLEncoder.encode(photo,"UTF-8");
+//            Log.d(Keys.LOG,"result encoder = " + result);
+//        } catch (UnsupportedEncodingException e) {
+//            e.printStackTrace();
+//        }
+//
+//
+//
+//        Call<ModelResponseSaveMessagePhoto> call = MainApplication.getQuery().savePhoto(result,server,hash,token);
+//        call.enqueue(new Callback<ModelResponseSaveMessagePhoto>() {
+//            @Override
+//            public void onResponse(Call<ModelResponseSaveMessagePhoto> call, Response<ModelResponseSaveMessagePhoto> response) {
+//                Log.d(Keys.LOG, "save raw = " + response.raw());
+//                Log.d(Keys.LOG, "savePhoto = " + response.body());
+//            }
+//
+//            @Override
+//            public void onFailure(Call<ModelResponseSaveMessagePhoto> call, Throwable t) {
+//                Log.d(Keys.LOG, "error in the savePhoto");
+//            }
+//        });
     }
 
-
-    private void uploadFile (String uploadServerURL, File file) {
-
-        // Создаем RequestBody
-        RequestBody requestFile =
-                RequestBody.create(MediaType.parse("multipart/form-data"), file);
-
-        // MultipartBody.Part используется, чтобы передать имя файла
-        MultipartBody.Part body =
-                MultipartBody.Part.createFormData("photo", file.getName(), requestFile);
-
-        // Выполняем запрос
-        Call<ModelResponseLoadServer> call = MainApplication.getQuery().loadPhoto(uploadServerURL, body);
-        call.enqueue(new Callback<ModelResponseLoadServer>() {
-            @Override
-            public void onResponse(Call<ModelResponseLoadServer> call, Response<ModelResponseLoadServer> response) {
-                Log.d("retrofit", "success");
-                Log.d(Keys.LOG,"response uploadserver = " + response.body());
-                Log.d(Keys.LOG,"raw response = " + response.raw());
-                ModelResponseLoadServer model= response.body();
-                savePhoto(model.getPhoto(),model.getServer(),model.getHash());
-
-            }
-
-            @Override
-            public void onFailure(Call<ModelResponseLoadServer> call, Throwable t) {
-                Log.d("retrofit", "error in the uploadFile");
-            }
-        });
-    }
-
-    private void savePhoto(String photo, Integer server, String hash) {
-
-
-
-        String result = "";
-        try {
-            result  = URLEncoder.encode(photo,"UTF-8");
-            Log.d(Keys.LOG,"result encoder = " + result);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
-
-
-        Call<ModelResponseSaveMessagePhoto> call = MainApplication.getQuery().savePhoto(photo,server,hash,token);
-        call.enqueue(new Callback<ModelResponseSaveMessagePhoto>() {
-            @Override
-            public void onResponse(Call<ModelResponseSaveMessagePhoto> call, Response<ModelResponseSaveMessagePhoto> response) {
-                Log.d(Keys.LOG, "save raw = " + response.raw());
-                Log.d(Keys.LOG, "savePhoto = " + response.body());
-            }
-
-            @Override
-            public void onFailure(Call<ModelResponseSaveMessagePhoto> call, Throwable t) {
-                Log.d(Keys.LOG, "error in the savePhoto");
-            }
-        });
-    }
-
-    public String getRealPathFromURI( Uri contentUri) {
+    private String getRealPathFromURI( Uri contentUri) {
         Cursor cursor = null;
         try {
             String[] proj = { MediaStore.Images.Media.DATA };
@@ -300,8 +227,15 @@ public class MessageActivity extends AppCompatActivity implements MessageView {
                 String realPath = getRealPathFromURI(data.getData());
                 File file = new File(realPath);
                 Log.d(Keys.LOG, "File from URI = " + file.toString());
-                uploadServer(file);
+                presenter.uploadServer(file);
             }
         }
     }
+
+    public void  removeContent(){
+        contentLayout.removeAllViews();
+        contentLayout.setVisibility(View.GONE);
+
+    }
+
 }

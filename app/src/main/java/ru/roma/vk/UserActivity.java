@@ -1,5 +1,6 @@
 package ru.roma.vk;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,13 +13,20 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import ru.roma.vk.holders.Friend;
 import ru.roma.vk.holders.Keys;
 import ru.roma.vk.utilitys.DownloadFile;
 import ru.roma.vk.utilitys.TimeHelper;
+import ru.roma.vk.wall.ModelResponseWall;
+import ru.roma.vk.wall.WallPost;
 
 /**
  * Created by Ilan on 28.09.2017.
@@ -60,6 +68,10 @@ public class UserActivity extends AppCompatActivity {
         llstatus.setVisibility(View.GONE);
 
         llhomeTown.setVisibility(View.GONE);
+
+
+        AsynWall wall = new AsynWall();
+        wall.execute(id);
 
         AsynUser asynUser = new AsynUser();
         asynUser.execute();
@@ -128,6 +140,22 @@ public class UserActivity extends AppCompatActivity {
             super.onPostExecute(friend);
             ready(friend);
             UserActivity.this.friend = friend;
+        }
+    }
+
+    private class AsynWall extends AsyncTask<Integer,Void,List<WallPost>>{
+
+        @Override
+        protected List<WallPost> doInBackground(Integer... integers) {
+            return ApiVK.getInstance().getWallPost(integers[0],0);
+        }
+
+        @Override
+        protected void onPostExecute(List<WallPost> wallPosts) {
+            super.onPostExecute(wallPosts);
+            Log.d(Keys.LOG,"wallPost = " + wallPosts.toString());
+
+            Log.d("example", " size = "+wallPosts.size());
         }
     }
 

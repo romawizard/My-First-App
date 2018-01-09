@@ -30,7 +30,7 @@ public class ModelResponseSaveMessagePhoto {
                 '}';
     }
 
-    public class Response{
+    public static class Response{
 
 
         @SerializedName("id")
