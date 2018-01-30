@@ -69,7 +69,7 @@ public class AudioService extends Service implements MediaPlayer.OnPreparedListe
         title = intent.getStringExtra(Keys.KEY_TITLE);
         artist = intent.getStringExtra(Keys.KEY_ARTIST);
         connect();
-        return super.onStartCommand(intent, flags, startId);
+        return START_STICKY;
     }
 
     @Override

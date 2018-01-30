@@ -63,12 +63,7 @@ public class UserActivity extends AppCompatActivity {
 
         id = getIntent().getIntExtra(Keys.KEY_INTENT, 1);
 
-        Log.d("my log", "id+ " + id);
-
-        llstatus.setVisibility(View.GONE);
-
-        llhomeTown.setVisibility(View.GONE);
-
+        Log.d("my log", "id user " + id);
 
         AsynWall wall = new AsynWall();
         wall.execute(id);

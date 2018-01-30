@@ -90,7 +90,8 @@
                 android:id="@+id/llstatus"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp">
+                android:layout_marginTop="5dp"
+                android:visibility="gone">
 
                 <ImageView
                     android:layout_width="20dp"
@@ -112,7 +113,8 @@
                 android:id="@+id/llhome_town"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp">
+                android:layout_marginTop="5dp"
+                android:visibility="gone">
 
                 <ImageView
                     android:layout_width="20dp"
@@ -135,7 +137,18 @@
 
                     android:textSize="16sp" />
             </LinearLayout>
+
         </LinearLayout>
 
+
     </ScrollView>
+
+    <android.support.v7.app.AlertController.RecycleListView
+        android:id="@+id/list_wall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </android.support.v7.app.AlertController.RecycleListView>
+
+
 </LinearLayout>

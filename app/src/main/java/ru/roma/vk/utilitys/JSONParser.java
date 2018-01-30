@@ -185,60 +185,56 @@ public class JSONParser {
             items = object.getJSONArray("items");
 
 
+            for (int i = 0; i < items.length(); i++) {
+
+                Message m = new Message();
+
+                JSONObject msg = items.optJSONObject(i);
+
+                String body = msg.optString("body");
+                int readState = msg.optInt("read_state");
+                int userId = msg.optInt("user_id");
+                int userFrom = msg.optInt("user_from");
+                int out = msg.optInt("out");
+                long date = msg.optLong("date");
+                int chatId = msg.optInt("chat_id");
+
+                if (msg.has("attachments")) {
+
+                    List<Attachment> allAttacments = new ArrayList<>();
+
+                    Log.d(Keys.LOG, "json = " + msg.has("attachments"));
+
+                    JSONArray attachmentsArray = msg.getJSONArray("attachments");
+
+                    for (int n = 0; n < attachmentsArray.length(); n++) {
+                        JSONObject oneAttach = attachmentsArray.getJSONObject(n);
+                        String type = oneAttach.getString("type");
 
 
-
-        for (int i = 0; i < items.length(); i++) {
-
-            Message m = new Message();
-
-            JSONObject msg = items.optJSONObject(i);
-
-            String body = msg.optString("body");
-            int readState = msg.optInt("read_state");
-            int userId = msg.optInt("user_id");
-            int userFrom = msg.optInt("user_from");
-            int out = msg.optInt("out");
-            long date = msg.optLong("date");
-            int chatId = msg.optInt("chat_id");
-
-            if (msg.has("attachments")){
-
-                List<Attachment> allAttacments = new ArrayList<>();
-
-                Log.d(Keys.LOG,"json = " + msg.has("attachments"));
-
-                JSONArray attachmentsArray = msg.getJSONArray("attachments");
-
-                for (int n=0;n<attachmentsArray.length();n++){
-                    JSONObject oneAttach = attachmentsArray.getJSONObject(n);
-                    String type = oneAttach.getString("type");
-
-
-                    JSONObject content = oneAttach.getJSONObject(type);
-                    Log.d(Keys.LOG,"json = " + content.toString());
-                    Attachment attachment = Attachment.getInstance(type,content);
-                    allAttacments.add(attachment);
+                        JSONObject content = oneAttach.getJSONObject(type);
+                        Log.d(Keys.LOG, "json = " + content.toString());
+                        Attachment attachment = Attachment.getInstance(type, content);
+                        allAttacments.add(attachment);
+                    }
+                    m.setContent(allAttacments);
                 }
-                m.setContent(allAttacments);
+
+
+                m.setBody(body);
+                m.setRead_state(readState);
+                m.setDate(date);
+                m.setUser_id(userId);
+                m.setFrom_id(userFrom);
+                m.setOut(out);
+                m.setChatId(chatId);
+
+                messages.add(m);
             }
-
-
-            m.setBody(body);
-            m.setRead_state(readState);
-            m.setDate(date);
-            m.setUser_id(userId);
-            m.setFrom_id(userFrom);
-            m.setOut(out);
-            m.setChatId(chatId);
-
-            messages.add(m);
-        }
         } catch (JSONException e) {
             e.printStackTrace();
             return messages;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return messages;
         }
@@ -284,12 +280,12 @@ public class JSONParser {
             e.printStackTrace();
         }
 
-        for (int i=0; i<jsonArray.length();i++){
+        for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject object = jsonArray.optJSONObject(i);
 
             Gson gson = new Gson();
             ModelResponseSaveMessagePhoto.Response responseObject = gson.fromJson(object.toString()
-                    ,ModelResponseSaveMessagePhoto.Response.class);
+                    , ModelResponseSaveMessagePhoto.Response.class);
             data.add(responseObject);
 
         }
@@ -311,42 +307,17 @@ public class JSONParser {
 
         WallPost.setCount(jsonObject.optInt("count"));
 
-        for (int i = 0; i<items.length();i++){
-
+        for (int i = 0; i < items.length(); i++) {
 
             Gson gson = new Gson();
 
             JSONObject oneObject = items.optJSONObject(i);
-            WallPost post = gson.fromJson(oneObject.toString(),WallPost.class);
+            WallPost post = gson.fromJson(oneObject.toString(), WallPost.class);
 
-            if (oneObject.has("attachment")) {
-
-                List<Attachment> allAttacments = new ArrayList<>();
-
-
-                JSONArray attachmentsArray = jsonObject.optJSONArray("attachments");
-
-                for (int n = 0; n < attachmentsArray.length(); n++) {
-                    JSONObject oneAttach = attachmentsArray.optJSONObject(n);
-                    String type = oneAttach.optString("type");
-
-
-                    JSONObject content = oneAttach.optJSONObject(type);
-                    Log.d(Keys.LOG, "json = " + content.toString());
-                    Attachment attachment = Attachment.getInstance(type, content);
-                    allAttacments.add(attachment);
-
-                }
-                post.setAttachments(allAttacments);
-            }
-
-            if (oneObject.has("copy_history")){
-
-            }
             data.add(post);
         }
         return data;
-
     }
+
 }
 

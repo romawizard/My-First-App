@@ -31,9 +31,9 @@ public class CopyHistory {
     @SerializedName("text")
     @Expose
     private String text;
-//    @SerializedName("attachments")
-//    @Expose
-//    private List<Attachment> attachments = null;
+    @SerializedName("attachments")
+    @Expose
+    private List<NewAttachment> attachments = null;
 //    @SerializedName("post_source")
 //    @Expose
 //    private PostSource postSource;
@@ -86,15 +86,14 @@ public class CopyHistory {
         this.text = text;
     }
 
-//    public List<Attachment> getAttachments() {
-//        return attachments;
-//    }
-//
-//    public void setAttachments(List<Attachment> attachments) {
-//        this.attachments = attachments;
-//    }
+    public List<NewAttachment> getAttachments() {
+        return attachments;
+    }
 
-//    public PostSource getPostSource() {
+    public void setAttachments(List<NewAttachment> attachments) {
+        this.attachments = attachments;
+    }
+    //    public PostSource getPostSource() {
 //        return postSource;
 //    }
 //

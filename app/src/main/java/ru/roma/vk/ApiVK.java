@@ -5,6 +5,7 @@ import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -16,6 +17,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -164,8 +166,17 @@ public class ApiVK implements DataInformation {
 
         String settings = "{\"msg\":\"on\", \"chat\":[\"no_sound\",\"no_text\"], \"friend\":\"on\", \"reply\":\"on\", \"mention\":\"fr_of_fr\"}";
         try {
+            JSONObject object = new JSONObject();
+            object.put("msg","on");
+            object.put("friend","on");
+            object.put("chat",new JSONArray(Arrays.asList(new String[]{"no_sound","no_text"})));
+            object.put("replay","on");
+            object.put("mention","fr_of_fr");
+            settings = object.toString();
             settings = URLEncoder.encode(settings,"utf-8");
         } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
             e.printStackTrace();
         }
         String URLQuery = "https://api.vk.com/method/account.registerDevice?token=" + nonifToken + "&device_id="

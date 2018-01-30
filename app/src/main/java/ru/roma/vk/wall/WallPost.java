@@ -36,7 +36,9 @@ public class WallPost {
 
     private transient List<CopyHistory> copyHistory = null;
 
-    private transient List<Attachment> attachments = null;
+    @SerializedName("attachments")
+    @Expose
+    private  List<NewAttachment> attachments = null;
 //    @SerializedName("post_source")
 //    @Expose
 //    private PostSource postSource;
@@ -115,11 +117,11 @@ public class WallPost {
         this.copyHistory = copyHistory;
     }
 
-    public List<Attachment> getAttachments() {
+    public List<NewAttachment> getAttachments() {
         return attachments;
     }
 
-    public void setAttachments(List<Attachment> attachments) {
+    public void setAttachments(List<NewAttachment> attachments) {
         this.attachments = attachments;
     }
 //        public PostSource getPostSource() {
